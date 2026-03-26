@@ -10,7 +10,7 @@ async def main():
             await session.initialize()
 
             #print(" OUTILS DISPONIBLES ") 
-            #tools= await session.list_outils()
+            #tools= await session.list_tools()
             #for tool in tools.tools:
                 #print(f"• {tool.name} : {tool.description}")
      
@@ -29,12 +29,12 @@ async def main():
 
                 # afficher les chunks récupérés
                 print("\n TEST rechercher_documents ")
-                resultat_docs = await session.apl_outils("rechercher_documents", {"query": q} )
+                resultat_docs = await session.call_tool("rechercher_documents", {"query": q} )
                 print(resultat_docs.content[0].text)
 
                 # afficher la réponse générée par le LLM
                 print("\n TEST poser_question ")
-                resultat_reponse = await session.apl_outils("poser_question",{"query": q} )
+                resultat_reponse = await session.call_tool("poser_question",{"query": q} )
                 print(resultat_reponse.content[0].text)
 
 if __name__ == "__main__":

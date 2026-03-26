@@ -56,8 +56,8 @@ def rep_score(query, reponse):
     score= np.dot(query_embedding, reponse_embedding)/(np.linalg.norm(query_embedding)* np.linalg.norm(reponse_embedding))
     return float(score)
 
-@server.list_outils()
-async def list_outils() :
+@server.list_tools()
+async def list_tools() :
     return [
         types.Tool(
             name="rechercher_documents",
@@ -89,8 +89,8 @@ async def list_outils() :
         )
     ]
 
-@server.apl_outils()
-async def apl_outils(nom_outil, arguments) : # fonction pour exécuter l'outil demandé
+@server.call_tool()
+async def call_tool(nom_outil, arguments) : # fonction pour exécuter l'outil demandé
     if nom_outil == "rechercher_documents":
         query= arguments["query"]
         logger.info(f"Recherche pour la requête : {query}") # Trace la requete dans le log
