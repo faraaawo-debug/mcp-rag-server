@@ -18,6 +18,38 @@ rechercher_documents → extraits les plus proches + source + similarité
 poser_question       → réponse de Mistral (local) + sources + indicateur de fiabilité
 ```
 
+## Documents
+
+Les documents fournis sont des supports de cours que j'ai suivis à Asia Pacific University of
+Technology and Innovation (APU). Ils sont en anglais et restent la propriété de leurs auteurs
+(mentions de copyright dans les fichiers).
+
+| Fichier | Matière | Type | Contenu |
+|---|---|---|---|
+| `research_methods_part1.pdf` | artificial_intelligence | lectures | Slides : qu'est-ce que la recherche et ses composantes |
+| `research_methods_part2.pdf` | artificial_intelligence | lectures | Slides : choisir un problème de recherche, problem statement, objectifs |
+| `ai_assignment_2026.pdf` | artificial_intelligence | assignments | Sujet du devoir individuel (Master AI 2026) |
+| `bis_assignment_guidelines.pdf` | business_intelligence_systems | assignments | Consignes du devoir de Business Intelligence Systems |
+
+Pour utiliser vos propres documents (PDF ou TXT), rangez-les selon l'arborescence
+`docs/<matiere>/<type>/<fichier>` :
+
+```
+docs/
+├── artificial_intelligence/
+│   ├── lectures/
+│   └── assignments/
+└── business_intelligence_systems/
+    └── assignments/
+```
+
+- `<matiere>` : nom libre, en minuscules et sans espaces (il sert de filtre exact).
+- `<type>` : `lectures`, `tutorials`, `exams` ou `assignments`.
+
+La matière et le type de chaque extrait sont déduits de ce chemin et enregistrés dans ses métadonnées.
+Un fichier rangé ailleurs est quand même indexé, avec la matière et le type `unknown`, et un
+avertissement est affiché.
+
 ## Outils exposés
 
 - `rechercher_documents(query)` : retourne les 3 extraits les plus pertinents, avec le fichier source et le score de similarité.
@@ -65,7 +97,7 @@ ollama pull mistral
 ## Utilisation
 
 ```bash
-# 1. Placer les documents dans docs/
+# 1. Placer les documents dans docs/<matiere>/<type>/ (voir la section Documents)
 # 2. Indexer les documents (relançable sans créer de doublons)
 python ingest.py
 # 3. Tester les outils
@@ -83,6 +115,8 @@ python evaluate.py
 3. Redémarrer Claude Desktop : les deux outils apparaissent dans la liste des outils disponibles.
 
 ## Limites
+
+- Le corpus est petit : 4 documents (environ 4 800 mots, 73 pages). Les mesures d'évaluation portent donc sur peu de données et doivent être lues comme des tendances, pas comme des résultats généralisables. Avec seulement 4 fichiers, retrouver le bon fichier est facile : la phrase clé retrouvée et le MRR sont plus parlants.
 
 - L'indicateur de fiabilité repose sur des similarités d'embeddings : il signale les réponses éloignées des documents, mais ne détecte pas toutes les erreurs.
 - Les questions larges, dont la réponse est répartie dans plusieurs parties d'un document, sont moins bien traitées que les questions précises.

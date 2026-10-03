@@ -12,6 +12,11 @@ LOG_PATH = BASE_DIR / "server.log"
 
 COLLECTION_NAME = "docs"
 
+# Organisation attendue : docs/<matiere>/<type>/<fichier>
+# La matière et le type de chaque extrait sont déduits de ce chemin.
+DOC_TYPES = ("lectures", "tutorials", "exams", "assignments")
+INCONNU = "unknown"
+
 # Modèle d'embeddings multilingue (français + anglais), 512 tokens maximum.
 # Les modèles E5 attendent les préfixes "query: " et "passage: ".
 EMBEDDING_MODEL = "intfloat/multilingual-e5-small"
