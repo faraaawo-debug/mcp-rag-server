@@ -1,70 +1,88 @@
-# MCP RAG Server — Assistant documentaire agentique
+# MCP RAG Server : interroger ses documents avec un LLM local
 
-Serveur MCP (Model Context Protocol) en Python exposant un pipeline RAG complet.
-Permet à n'importe quel client MCP compatible d'interroger une base documentaire
-via des outils standardisés.
+Serveur MCP (Model Context Protocol) en Python qui permet à un assistant IA, comme Claude Desktop,
+d'interroger une base de documents PDF ou texte. Le serveur retrouve les extraits utiles, fait générer
+une réponse par un LLM open source exécuté en local (Mistral via Ollama), cite les sources et
+indique un niveau de fiabilité.
 
 ## Architecture
+
 ```
-Document (PDF/TXT)
+Documents (PDF / TXT)
+      ↓  ingest.py : découpage en extraits de 200 mots (40 mots de chevauchement)
+Embeddings multilingues (intfloat/multilingual-e5-small)
       ↓
-Ingestion + vectorisation (bge-small-en-v1.5)
-      ↓
-Stockage ChromaDB
-      ↓
-Serveur MCP expose 2 outils
-      ↓
-rechercher_documents → retrieval sémantique
-poser_question       → réponse Mistral + évaluation RAG
+Base vectorielle ChromaDB (similarité cosinus)
+      ↓  server.py : 2 outils MCP
+rechercher_documents → extraits les plus proches + source + similarité
+poser_question       → réponse de Mistral (local) + sources + indicateur de fiabilité
 ```
 
 ## Outils exposés
 
-- `rechercher_documents(query)` — retourne les passages les plus pertinents
-- `poser_question(query)` — génère une réponse via Mistral + évalue la qualité
+- `rechercher_documents(query)` : retourne les 3 extraits les plus pertinents, avec le fichier source et le score de similarité.
+- `poser_question(query)` : génère une réponse à partir de ces extraits uniquement. La réponse cite ses sources, et le LLM répond « Je ne sais pas » si l'information est absente.
 
-## Évaluation des réponses
+## Indicateur de fiabilité
 
-Chaque réponse est évaluée avec 3 métriques :
-- **Fidélité** : La réponse générée par le LLM est-elle fidèle aux chunks ?
-- **Pertinence du contexte** : les chunks récupérés sont-ils pertinents ?
-- **Pertinence des réponses** : la réponse répond-elle à la question ?
+Chaque réponse est accompagnée d'un statut renvoyé à l'utilisateur :
+
+- **FIABLE** ou **À VÉRIFIER**, selon un score calculé à partir de trois similarités cosinus (réponse / extraits, extraits / question, réponse / question). Le seuil est calibré par `evaluate.py`.
+- **PAS DE RÉPONSE** quand le modèle indique que l'information n'est pas dans les documents.
+
+Ce score est un indicateur rapide, pas une preuve. La qualité réelle est mesurée séparément (section suivante).
+
+## Évaluation
+
+`evaluate.py` teste le système sur un jeu de questions annotées à la main (`eval_set.json`),
+qui contient des questions dont la réponse est dans les documents et d'autres dont elle n'y est pas.
+Un LLM sert de juge pour l'exactitude et la fidélité.
+
+| Mesure | Résultat |
+|---|---|
+| Questions | À COMPLÉTER |
+| Recherche réussie (bon document dans les 3 extraits) | À COMPLÉTER |
+| Exactitude des réponses | À COMPLÉTER |
+| Fidélité aux documents | À COMPLÉTER |
+| Refus corrects (information absente) | À COMPLÉTER |
+| Temps de génération moyen | À COMPLÉTER |
 
 ## Stack technique
 
-- Python 3.11
-- MCP SDK (Model Context Protocol)
-- ChromaDB — base vectorielle locale
-- Sentence Transformers (BAAI/bge-small-en-v1.5) — embeddings
-- Ollama + Mistral — LLM local
+Python 3.11, MCP SDK, ChromaDB, Sentence Transformers (multilingual-e5-small), Ollama + Mistral.
 
 ## Installation
+
 ```bash
-# Cloner le repo
 git clone https://github.com/faraaawo-debug/mcp-rag-server.git
 cd mcp-rag-server
-
-# Créer l'environnement virtuel
 python3.11 -m venv venv
 source venv/bin/activate
-
-# Installer les dépendances
 pip install -r requirements.txt
-
-# Lancer Ollama avec Mistral
 ollama pull mistral
 ```
 
 ## Utilisation
-```bash
-# 1. Ajouter des documents dans le dossier docs/
-# 2. Ingérer les documents
-python3 ingest.py
 
-# 3. Lancer le client de test
-python3 test_client.py
+```bash
+# 1. Placer les documents dans docs/
+# 2. Indexer les documents (relançable sans créer de doublons)
+python ingest.py
+# 3. Tester les outils
+python test_client.py
+# 4. Évaluer le système
+python evaluate.py
 ```
 
-## Limites identifiées
+## Utilisation avec Claude Desktop
 
-- Performances meilleures sur les questions précises que sur les questions larges (A retravailler)
+1. Ouvrir le fichier de configuration de Claude Desktop :
+   - macOS : `~/Library/Application Support/Claude/claude_desktop_config.json`
+   - Windows : `%APPDATA%\Claude\claude_desktop_config.json`
+2. Y ajouter le contenu de `claude_desktop_config.example.json`, en remplaçant les chemins par les chemins absolus de votre machine.
+3. Redémarrer Claude Desktop : les deux outils apparaissent dans la liste des outils disponibles.
+
+## Limites
+
+- L'indicateur de fiabilité repose sur des similarités d'embeddings : il signale les réponses éloignées des documents, mais ne détecte pas toutes les erreurs.
+- Les questions larges, dont la réponse est répartie dans plusieurs parties d'un document, sont moins bien traitées que les questions précises.

@@ -1,59 +1,72 @@
-import os
-from pypdf import PdfReader
+"""Indexe les documents PDF et TXT du dossier docs/ dans ChromaDB."""
 import chromadb
-from sentence_transformers import SentenceTransformer
+from pypdf import PdfReader
 
+import config
+from rag_utils import embed_passages
 
-model = SentenceTransformer("BAAI/bge-small-en-v1.5") # On charge le modèle d'embeddings
-client=chromadb.PersistentClient(path="./chroma_db") # Initialisation de ChromaDB
-collection=client.get_or_create_collection(name="docs") # On crée une collection pour les documents
-
-#Lit les fichiers PDF et TXT du dossier docs/
-def charger_doc(doc) :
-    documents = []
-    for filename in os.listdir(doc):
-        filepath = os.path.join(doc, filename)
-        if filename.endswith(".pdf"):
-            reader = PdfReader(filepath)
-            text = " ".join(page.extract_text() for page in reader.pages)
-            documents.append({"filename": filename, "text": text})
-        elif filename.endswith(".txt"):
-            with open(filepath, "r", encoding="utf-8") as f:
-                text = f.read()
-            documents.append({"filename": filename, "text": text})
-    return documents
-
-#Découpe le texte en chunks avec chevauchement de 50 mots 
-def chunk_texte(texte, taille_chunk=500, step=50):
-    chunks=[]
-    deb=0
-    if step>= taille_chunk:
-        raise ValueError("step doit être plus petit que taille_chunk")
-    while deb< len(texte):
-        fin= deb + taille_chunk
-        chunk= texte[deb:fin]
-        if chunk.strip():
-            chunks.append(chunk)
-        deb += taille_chunk-step
-    return chunks
 
 def charger_documents():
-    print("Chargement des documents...")
-    documents=charger_doc("./docs")
-    
-    if not documents:
-        print("Aucun document trouvé dans le dossier docs/")
-        return
-    for doc in documents:
-        print(f"Traitement de {doc['filename']}...")
-        chunks= chunk_texte(doc["text"])
-        embeddings= model.encode(chunks)
+    """Lit les fichiers PDF et TXT du dossier docs/."""
+    documents = []
+    for chemin in sorted(config.DOCS_DIR.iterdir()):
+        if chemin.suffix.lower() == ".pdf":
+            lecteur = PdfReader(chemin)
+            texte = " ".join((page.extract_text() or "") for page in lecteur.pages)
+        elif chemin.suffix.lower() == ".txt":
+            texte = chemin.read_text(encoding="utf-8")
+        else:
+            continue
+        if texte.strip():
+            documents.append({"source": chemin.name, "texte": texte})
+    return documents
 
-        collection.add(documents= chunks, embeddings=embeddings,
-            ids=[f"{doc['filename']}-chunk-{i}" for i in range(len(chunks))])
-        print(f"{len(chunks)} chunks indexés pour {doc['filename']}")
-    
-    print("Documents chargés et indexés avec succès !")
+
+def decouper_en_mots(texte, taille=config.CHUNK_WORDS, chevauchement=config.OVERLAP_WORDS):
+    """Découpe le texte en extraits de `taille` mots, avec `chevauchement` mots en commun
+    entre deux extraits consécutifs (aucun mot n'est coupé en deux)."""
+    if chevauchement >= taille:
+        raise ValueError("le chevauchement doit être plus petit que la taille")
+    mots = texte.split()
+    pas = taille - chevauchement
+    extraits = []
+    for debut in range(0, len(mots), pas):
+        extraits.append(" ".join(mots[debut:debut + taille]))
+        if debut + taille >= len(mots):
+            break
+    return extraits
+
+
+def main():
+    documents = charger_documents()
+    if not documents:
+        print(f"Aucun document trouvé dans {config.DOCS_DIR}")
+        return
+
+    # On repart d'une collection vide : relancer l'ingestion ne crée pas de doublons
+    client = chromadb.PersistentClient(path=str(config.CHROMA_PATH))
+    try:
+        client.delete_collection(config.COLLECTION_NAME)
+    except Exception:
+        pass
+    collection = client.create_collection(
+        name=config.COLLECTION_NAME, metadata={"hnsw:space": "cosine"}
+    )
+
+    total = 0
+    for doc in documents:
+        extraits = decouper_en_mots(doc["texte"])
+        collection.add(
+            ids=[f"{doc['source']}-{i}" for i in range(len(extraits))],
+            documents=extraits,
+            embeddings=embed_passages(extraits).tolist(),
+            metadatas=[{"source": doc["source"], "chunk": i} for i in range(len(extraits))],
+        )
+        total += len(extraits)
+        print(f"{doc['source']} : {len(extraits)} extraits indexés")
+
+    print(f"Terminé : {total} extraits indexés pour {len(documents)} documents.")
+
 
 if __name__ == "__main__":
-    charger_documents()
+    main()

@@ -1,0 +1,30 @@
+[
+  {
+    "question": "Which software tools are allowed for work purposes?",
+    "repondable": true,
+    "source_attendue": "A_COMPLETER (nom exact du fichier, ex : it_policy.pdf)",
+    "reponse_attendue": "A_COMPLETER"
+  },
+  {
+    "question": "How often must employees update their passwords?",
+    "repondable": true,
+    "source_attendue": "A_COMPLETER",
+    "reponse_attendue": "A_COMPLETER"
+  },
+  {
+    "question": "What is the consequence for a minor violation of this policy?",
+    "repondable": true,
+    "source_attendue": "A_COMPLETER",
+    "reponse_attendue": "A_COMPLETER"
+  },
+  {
+    "question": "What task did David complete before this meeting?",
+    "repondable": true,
+    "source_attendue": "A_COMPLETER",
+    "reponse_attendue": "A_COMPLETER"
+  },
+  {
+    "question": "What is the company's annual revenue?",
+    "repondable": false
+  }
+]

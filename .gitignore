@@ -1,6 +1,4 @@
 venv/
 chroma_db/
-server.log
 __pycache__/
-*.pyc
-.DS_Store
+server.log
