@@ -1,5 +1,7 @@
 # MCP RAG Server: ask questions about your course documents from Claude Desktop
 
+[![tests](https://github.com/faraaawo-debug/mcp-rag-server/actions/workflows/tests.yml/badge.svg)](https://github.com/faraaawo-debug/mcp-rag-server/actions/workflows/tests.yml)
+
 An MCP (Model Context Protocol) server in Python that lets an AI assistant such as Claude Desktop
 query a set of PDF or text course documents. Retrieval runs locally; the answer is written by an
 LLM through the Mistral API (`ministral-14b-2512`), or locally through Ollama as an option. Every
@@ -156,6 +158,9 @@ To run fully offline, set `LLM_PROVIDER = "ollama"` in `config.py` and install t
 python ingest.py
 # 3. Try both tools through an MCP client
 python test_client.py
+# Unit tests (no API key needed, no model download)
+pip install -r requirements-dev.txt
+pytest
 # 4. Evaluate (results saved in results/<label>.json)
 python evaluate.py --label my_version
 # Quick retrieval-only evaluation, no LLM call (~1 min)
@@ -204,4 +209,4 @@ python evaluate.py --label my_version --regrade results/baseline.json
 
 Python 3.12, MCP Python SDK 2, PyMuPDF, ChromaDB, Sentence Transformers
 (`intfloat/multilingual-e5-small`), Mistral API (`ministral-14b-2512`), Groq API (evaluation judge),
-Ollama (optional).
+Ollama (optional), pytest and GitHub Actions for the unit tests.

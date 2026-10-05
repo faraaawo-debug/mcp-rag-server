@@ -1,4 +1,6 @@
 venv/
 chroma_db/
 __pycache__/
+.pytest_cache/
 server.log
+.env
