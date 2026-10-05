@@ -1,6 +1,9 @@
-mcp
+mcp>=2,<3
 chromadb
 sentence-transformers
-ollama
 pypdf
 numpy
+# LLM : API Mistral (génération), API Groq (juge de l'évaluation), Ollama (option locale)
+mistralai>=3,<4
+groq
+ollama

@@ -3,10 +3,10 @@ import time
 
 import chromadb
 import numpy as np
-import ollama
 from sentence_transformers import SentenceTransformer
 
 import config
+import llm
 
 _model = None
 
@@ -55,17 +55,19 @@ def rechercher(question, k=config.TOP_K):
     return passages
 
 
-PROMPT = """Tu es un assistant qui répond uniquement à partir des extraits fournis.
-Règles :
-- Utilise seulement les informations présentes dans les extraits.
-- Si la réponse ne s'y trouve pas, réponds exactement : "Je ne sais pas."
-- Réponds dans la langue de la question.
-- Cite entre crochets le fichier source de chaque information, par exemple [rapport.pdf].
+# Prompt en anglais, la langue des documents : un prompt en français poussait le modèle
+# à répondre en français à des questions posées en anglais.
+PROMPT = """You are an assistant that answers questions using ONLY the excerpts below.
+Rules:
+- Use only information stated in the excerpts. Do not use your general knowledge.
+- If the answer is not in the excerpts, reply exactly: "I don't know."
+- Answer in the language of the question.
+- Cite the source file of each piece of information in square brackets, e.g. [lecture.pdf].
 
-Extraits :
+Excerpts:
 {contexte}
 
-Question : {question}
+Question: {question}
 """
 
 REFUS = ("je ne sais pas", "i don't know", "i do not know")
@@ -76,16 +78,16 @@ def est_un_refus(reponse):
 
 
 def generer_reponse(question, passages):
-    """Appelle le LLM local et mesure le temps de réponse."""
+    """Appelle le LLM configuré (température 0) et mesure le temps de réponse,
+    attentes éventuelles dues aux limites de l'API comprises."""
     contexte = "\n\n".join(f"[{p['source']}] {p['texte']}" for p in passages)
     debut = time.perf_counter()
-    resultat = ollama.chat(
-        model=config.LLM_MODEL,
-        messages=[{"role": "user", "content": PROMPT.format(contexte=contexte, question=question)}],
-        options={"temperature": 0},  # réponses reproductibles
+    reponse = llm.discuter(
+        [{"role": "user", "content": PROMPT.format(contexte=contexte, question=question)}],
+        fournisseur=config.LLM_PROVIDER, modele=config.LLM_MODEL,
     )
     latence = time.perf_counter() - debut
-    return resultat["message"]["content"].strip(), latence
+    return reponse, latence
 
 
 def scores_similarite(question, reponse, passages):

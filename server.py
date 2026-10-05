@@ -2,9 +2,7 @@
 import asyncio
 import logging
 
-from mcp import types
-from mcp.server import Server
-from mcp.server.stdio import stdio_server
+from mcp.server import MCPServer
 
 import config
 from rag_utils import get_model, rechercher, repondre
@@ -13,11 +11,12 @@ from rag_utils import get_model, rechercher, repondre
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
-    handlers=[logging.FileHandler(config.LOG_PATH), logging.StreamHandler()],
+    handlers=[logging.FileHandler(config.LOG_PATH, encoding="utf-8"), logging.StreamHandler()],
 )
+logging.getLogger("httpx").setLevel(logging.WARNING)  # masque chaque requête HTTP vers les API
 logger = logging.getLogger(__name__)
 
-server = Server("mcp-rag-server")
+mcp = MCPServer("mcp-rag-server")
 
 STATUTS = {
     "fiable": "FIABLE : la réponse s'appuie sur les documents",
@@ -37,64 +36,42 @@ def formater_resultat(resultat):
     return "\n".join(lignes)
 
 
-@server.list_tools()
-async def list_tools():
-    schema = {
-        "type": "object",
-        "properties": {"query": {"type": "string", "description": "La question ou le sujet à rechercher"}},
-        "required": ["query"],
-    }
-    return [
-        types.Tool(
-            name="rechercher_documents",
-            description="Retourne les extraits de documents les plus pertinents pour une question, avec leur source.",
-            inputSchema=schema,
-        ),
-        types.Tool(
-            name="poser_question",
-            description=(
-                "Répond à une question à partir des documents, en citant les sources "
-                "et en indiquant un niveau de fiabilité."
-            ),
-            inputSchema=schema,
-        ),
-    ]
+@mcp.tool()
+async def rechercher_documents(query: str) -> str:
+    """Retourne les extraits de documents les plus pertinents pour une question, avec leur source.
+
+    Args:
+        query: La question ou le sujet à rechercher
+    """
+    logger.info(f"Recherche : {query}")
+    # Les embeddings sont bloquants : on les exécute hors de la boucle asyncio
+    passages = await asyncio.to_thread(rechercher, query)
+    return "\n\n---\n\n".join(
+        f"[{p['source']}, extrait {p['chunk']}, similarité {p['similarite']:.2f}]\n{p['texte']}"
+        for p in passages
+    )
 
 
-@server.call_tool()
-async def call_tool(nom_outil, arguments):
-    question = arguments["query"]
+@mcp.tool()
+async def poser_question(query: str) -> str:
+    """Répond à une question à partir des documents, en citant les sources
+    et en indiquant un niveau de fiabilité.
 
-    if nom_outil == "rechercher_documents":
-        logger.info(f"Recherche : {question}")
-        passages = await asyncio.to_thread(rechercher, question)
-        texte = "\n\n---\n\n".join(
-            f"[{p['source']}, extrait {p['chunk']}, similarité {p['similarite']:.2f}]\n{p['texte']}"
-            for p in passages
-        )
-        return [types.TextContent(type="text", text=texte)]
-
-    if nom_outil == "poser_question":
-        logger.info(f"Question : {question}")
-        # Le LLM et les embeddings sont bloquants : on les exécute hors de la boucle asyncio
-        resultat = await asyncio.to_thread(repondre, question)
-        logger.info(
-            f"Statut : {resultat['statut']} | score : {resultat['score_global']} | "
-            f"scores : {resultat['scores']} | latence : {resultat['latence_s']} s"
-        )
-        return [types.TextContent(type="text", text=formater_resultat(resultat))]
-
-    logger.warning(f"Outil inconnu appelé : {nom_outil}")
-    return [types.TextContent(type="text", text=f"Outil inconnu : {nom_outil}")]
-
-
-async def main():
-    logger.info("Chargement du modèle d'embeddings...")
-    get_model()  # chargé au démarrage pour que la première question ne soit pas lente
-    logger.info("Démarrage du serveur MCP")
-    async with stdio_server() as (read_stream, write_stream):
-        await server.run(read_stream, write_stream, server.create_initialization_options())
+    Args:
+        query: La question ou le sujet à rechercher
+    """
+    logger.info(f"Question : {query}")
+    # Le LLM et les embeddings sont bloquants : on les exécute hors de la boucle asyncio
+    resultat = await asyncio.to_thread(repondre, query)
+    logger.info(
+        f"Statut : {resultat['statut']} | score : {resultat['score_global']} | "
+        f"scores : {resultat['scores']} | latence : {resultat['latence_s']} s"
+    )
+    return formater_resultat(resultat)
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    logger.info("Chargement du modèle d'embeddings...")
+    get_model()  # chargé au démarrage pour que la première question ne soit pas lente
+    logger.info(f"Démarrage du serveur MCP (LLM : {config.LLM_PROVIDER}/{config.LLM_MODEL})")
+    mcp.run()  # transport stdio : Claude Desktop lance ce script et dialogue par stdin/stdout

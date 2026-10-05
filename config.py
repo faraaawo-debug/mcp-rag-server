@@ -20,8 +20,17 @@ INCONNU = "unknown"
 # Les modèles E5 attendent les préfixes "query: " et "passage: ".
 EMBEDDING_MODEL = "intfloat/multilingual-e5-small"
 
-# LLM local servi par Ollama
-LLM_MODEL = "mistral"
+# LLM qui rédige les réponses
+# "mistral" (par défaut) : API Mistral, clé dans la variable d'environnement MISTRAL_API_KEY.
+#   ministral-14b-2512 : inclus dans l'offre gratuite (mistral-small y est bloqué), version figée
+#   par sa date pour que les mesures restent reproductibles.
+# "ollama" : modèle local, utilisable hors ligne et sans envoyer de données (~2 min par
+#   réponse sur un processeur de portable sans GPU).
+LLM_PROVIDER = "mistral"
+LLM_MODELS = {"mistral": "ministral-14b-2512", "ollama": "mistral"}
+LLM_MODEL = LLM_MODELS[LLM_PROVIDER]
+# Nombre d'essais quand une API répond "trop de requêtes" ou est indisponible
+LLM_ESSAIS = 6
 
 # Découpage : 200 mots par extrait, 40 mots de chevauchement
 CHUNK_WORDS = 200
@@ -30,8 +39,10 @@ OVERLAP_WORDS = 40
 # Nombre d'extraits récupérés par question
 TOP_K = 3
 
-# Évaluation : modèle juge différent du modèle qui génère (limite l'auto-préférence)
-JUGE_MODEL = "llama3"
+# Évaluation : juge d'une autre famille que le modèle qui génère (limite l'auto-préférence),
+# clé dans la variable d'environnement GROQ_API_KEY
+JUGE_PROVIDER = "groq"
+JUGE_MODEL = "openai/gpt-oss-120b"
 # La recherche est toujours mesurée sur ces k, quel que soit le k utilisé par le pipeline,
 # pour que les mesures restent comparables d'une version à l'autre
 K_EVAL = (1, 5)

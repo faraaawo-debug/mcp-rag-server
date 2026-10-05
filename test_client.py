@@ -1,20 +1,22 @@
 """Client de test : appelle les deux outils du serveur MCP sur quelques questions."""
 import asyncio
+import sys
+from pathlib import Path
 
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
 QUESTIONS = [
-    "Which software tools are allowed for work purposes?",
-    "How often must employees update their passwords?",
-    "What is the consequence for a minor violation of this policy?",
-    "What task did David complete before this meeting?",
-    "What is the precise cause of the 3-day delay in Phase B?",
+    "What is an abstract?",
+    "Compare Option A and Option B of the AI assignment.",
+    "What is the capital of Australia?",
 ]
 
 
 async def main():
-    params = StdioServerParameters(command="python", args=["server.py"])
+    # Même Python que celui qui lance ce script (celui du venv), chemin absolu vers le serveur
+    serveur = Path(__file__).resolve().parent / "server.py"
+    params = StdioServerParameters(command=sys.executable, args=[str(serveur)])
     async with stdio_client(params) as (read, write):
         async with ClientSession(read, write) as session:
             await session.initialize()

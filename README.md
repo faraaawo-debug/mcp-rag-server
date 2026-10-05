@@ -1,9 +1,9 @@
-# MCP RAG Server : interroger ses documents avec un LLM local
+# MCP RAG Server : interroger ses documents de cours depuis Claude Desktop
 
 Serveur MCP (Model Context Protocol) en Python qui permet à un assistant IA, comme Claude Desktop,
-d'interroger une base de documents PDF ou texte. Le serveur retrouve les extraits utiles, fait générer
-une réponse par un LLM open source exécuté en local (Mistral via Ollama), cite les sources et
-indique un niveau de fiabilité.
+d'interroger une base de documents PDF ou texte. La recherche des extraits utiles se fait en local ;
+la réponse est rédigée par un LLM via l'API Mistral (`ministral-14b-2512`), ou en local via Ollama
+en option. Chaque réponse cite ses sources et indique un niveau de fiabilité.
 
 ## Architecture
 
@@ -15,7 +15,7 @@ Embeddings multilingues (intfloat/multilingual-e5-small)
 Base vectorielle ChromaDB (similarité cosinus)
       ↓  server.py : 2 outils MCP
 rechercher_documents → extraits les plus proches + source + similarité
-poser_question       → réponse de Mistral (local) + sources + indicateur de fiabilité
+poser_question       → réponse du LLM (API Mistral, ou Ollama en local) + sources + indicateur de fiabilité
 ```
 
 ## Documents
@@ -53,7 +53,7 @@ avertissement est affiché.
 ## Outils exposés
 
 - `rechercher_documents(query)` : retourne les 3 extraits les plus pertinents, avec le fichier source et le score de similarité.
-- `poser_question(query)` : génère une réponse à partir de ces extraits uniquement. La réponse cite ses sources, et le LLM répond « Je ne sais pas » si l'information est absente.
+- `poser_question(query)` : génère une réponse à partir de ces extraits uniquement. La réponse cite ses sources, et le LLM répond « I don't know. » si l'information est absente.
 
 ## Indicateur de fiabilité
 
@@ -66,33 +66,65 @@ Ce score est un indicateur rapide, pas une preuve. La qualité réelle est mesur
 
 ## Évaluation
 
-`evaluate.py` teste le système sur un jeu de questions annotées à la main (`eval_set.json`),
-qui contient des questions dont la réponse est dans les documents et d'autres dont elle n'y est pas.
-Un LLM sert de juge pour l'exactitude et la fidélité.
+`evaluate.py` teste le système sur 23 questions annotées à la main (`eval_set.json`) :
+15 dont la réponse est dans les documents, 5 dans le thème des cours mais absentes des documents,
+et 3 hors sujet. Pour chaque question répondable, j'ai noté le fichier source, la réponse attendue
+et une phrase clé recopiée du bon passage.
 
-| Mesure | Résultat |
-|---|---|
-| Questions | À COMPLÉTER |
-| Recherche réussie (bon document dans les 3 extraits) | À COMPLÉTER |
-| Exactitude des réponses | À COMPLÉTER |
-| Fidélité aux documents | À COMPLÉTER |
-| Refus corrects (information absente) | À COMPLÉTER |
-| Temps de génération moyen | À COMPLÉTER |
+- **Recherche**, mesurée sans LLM, toujours sur les 5 premiers extraits quel que soit le réglage
+  du pipeline : bon fichier et phrase clé retrouvés à k=1 et k=5, et MRR (moyenne de 1/rang du
+  premier extrait contenant la phrase clé). La phrase clé est comparée sans espaces ni ponctuation,
+  pour ne pas dépendre de la façon dont le PDF a été extrait.
+- **Réponses**, notées par un LLM juge (`openai/gpt-oss-120b` via l'API Groq), d'une autre famille
+  que le modèle qui génère pour limiter le biais d'auto-préférence : exactitude par rapport à la
+  réponse attendue, et fidélité aux extraits (calculée sur les réponses données, un refus
+  n'affirmant rien). Le juge répond en JSON strict ; sa fiabilité reste à vérifier (étape 9).
+- **Refus corrects** sur les 8 questions sans réponse, et **temps de génération** moyen.
+
+Chaque amélioration est mesurée séparément ; les résultats détaillés sont dans `resultats/`.
+Avec 15 questions répondables, une question vaut 6,7 points : les écarts se lisent comme des
+tendances.
+
+### Progression
+
+| Version | Phrase clé @1 | Phrase clé @5 | MRR | Exactitude | Fidélité | Refus corrects | Temps moyen |
+|---|---|---|---|---|---|---|---|
+| Référence : pipeline initial + `ministral-14b-2512` | 53 % (8/15) | 93 % (14/15) | 0,678 | 73 % (11/15) | 77 % (10/13) | 100 % (8/8) | 1,9 s |
+
+Le bon fichier est retrouvé en 1re position dans 80 % des cas et dans les 5 premiers dans 100 % des
+cas : avec 4 documents, cette mesure distingue peu les versions.
+
+Une première mesure entièrement locale (mistral 7B via Ollama, juge llama3) est conservée comme
+trace dans `resultats/trace_local_*` mais n'est pas comparée : sur un processeur de portable sans
+GPU, elle prenait environ 1 h 45 et son juge s'est révélé peu fiable.
 
 ## Stack technique
 
-Python 3.11, MCP SDK, ChromaDB, Sentence Transformers (multilingual-e5-small), Ollama + Mistral.
+Python 3.12, MCP SDK 2, ChromaDB, Sentence Transformers (multilingual-e5-small), API Mistral
+(`ministral-14b-2512`), API Groq pour le juge de l'évaluation, Ollama en option.
 
 ## Installation
 
 ```bash
 git clone https://github.com/faraaawo-debug/mcp-rag-server.git
 cd mcp-rag-server
-python3.11 -m venv venv
-source venv/bin/activate
+python -m venv venv
+venv\Scripts\activate          # Windows (macOS / Linux : source venv/bin/activate)
 pip install -r requirements.txt
-ollama pull mistral
 ```
+
+Clés API, à créer dans les consoles Mistral et Groq puis à enregistrer comme variables
+d'environnement utilisateur (jamais dans le code ni dans Git) :
+
+- `MISTRAL_API_KEY` : génération des réponses (offre gratuite suffisante).
+- `GROQ_API_KEY` : juge de l'évaluation uniquement.
+
+Sous Windows : « Modifier les variables d'environnement pour votre compte » → Variables utilisateur
+→ Nouvelle. Le serveur relit aussi ces variables utilisateur directement, car un client MCP ne
+transmet qu'une liste restreinte de variables au serveur qu'il lance.
+
+Pour fonctionner hors ligne, mettre `LLM_PROVIDER = "ollama"` dans `config.py` et installer le
+modèle local (`ollama pull mistral`).
 
 ## Utilisation
 
@@ -103,7 +135,9 @@ python ingest.py
 # 3. Tester les outils
 python test_client.py
 # 4. Évaluer le système
-python evaluate.py
+python evaluate.py --etiquette nom_de_version
+# Mesure rapide de la recherche seule, sans LLM
+python evaluate.py --etiquette essai --recherche-seule
 ```
 
 ## Utilisation avec Claude Desktop
@@ -118,5 +152,7 @@ python evaluate.py
 
 - Le corpus est petit : 4 documents (environ 4 800 mots, 73 pages). Les mesures d'évaluation portent donc sur peu de données et doivent être lues comme des tendances, pas comme des résultats généralisables. Avec seulement 4 fichiers, retrouver le bon fichier est facile : la phrase clé retrouvée et le MRR sont plus parlants.
 
-- L'indicateur de fiabilité repose sur des similarités d'embeddings : il signale les réponses éloignées des documents, mais ne détecte pas toutes les erreurs.
+- L'indicateur de fiabilité repose sur des similarités d'embeddings. Dans la version actuelle, il ne sépare pas les bonnes réponses des mauvaises : toutes les réponses données obtiennent un score entre 0,83 et 0,92 (calibration prévue).
+- Quand le bon passage n'est pas parmi les 3 extraits transmis au LLM, celui-ci répond « I don't know. » plutôt que d'inventer : c'est le cas de 2 des 15 questions répondables dans la référence.
+- Le texte barré et le texte contenu dans les images des slides ne sont pas extraits des PDF.
 - Les questions larges, dont la réponse est répartie dans plusieurs parties d'un document, sont moins bien traitées que les questions précises.

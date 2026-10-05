@@ -18,9 +18,8 @@ import json
 import re
 import statistics
 
-import ollama
-
 import config
+import llm
 from rag_utils import est_un_refus, rechercher, repondre
 
 # Prompts en anglais (langue des documents et des questions) et sortie JSON imposée :
@@ -34,26 +33,30 @@ Does the proposed answer contain the essential information of the reference answ
 An answer that says the information is not available, or that misses the essential point, is NOT correct.
 Reply with JSON only, exactly one of: {{"verdict": "YES"}} or {{"verdict": "NO"}}"""
 
+# Le juge reçoit la question et les extraits étiquetés par leur fichier, exactement comme le
+# générateur : sans cela, il rejetait des réponses fidèles (citation de fichier invérifiable,
+# réponse courte incompréhensible sans la question).
 JUGE_FIDELITE = """You are checking whether an answer is supported by document excerpts.
+Each excerpt starts with its source file name in square brackets.
+
+Question: {question}
+
 Excerpts:
 {contexte}
 
 Answer: {reponse}
 
-Is EVERY claim in the answer supported by the excerpts? If at least one claim is not supported, the verdict is NO.
+Is every factual claim in the answer supported by the excerpts? Rephrasing or summarizing the excerpts is allowed.
+Citing a source file name that appears in the excerpt labels is not a claim to check.
+If at least one factual claim is not supported by the excerpts, the verdict is NO.
 Reply with JSON only, exactly one of: {{"verdict": "YES"}} or {{"verdict": "NO"}}"""
 
 
 def juger(prompt):
     """Pose une question fermée au modèle juge.
     Retourne (verdict, texte brut) ; verdict vaut None si la sortie est illisible."""
-    resultat = ollama.chat(
-        model=config.JUGE_MODEL,
-        messages=[{"role": "user", "content": prompt}],
-        format="json",
-        options={"temperature": 0},
-    )
-    brut = resultat["message"]["content"].strip()
+    brut = llm.discuter([{"role": "user", "content": prompt}],
+                        fournisseur=config.JUGE_PROVIDER, modele=config.JUGE_MODEL, json_strict=True)
     try:
         verdict = str(json.loads(brut).get("verdict", "")).strip().upper()
     except (json.JSONDecodeError, AttributeError):
@@ -93,9 +96,9 @@ def juger_ligne(ligne, item):
     if ligne["statut"] == "refus":
         ligne["fidele"], ligne["juge_fidelite"] = None, None  # un refus n'affirme rien
     else:
-        contexte = "\n\n".join(p["texte"] for p in ligne["passages"])
-        ligne["fidele"], ligne["juge_fidelite"] = juger(
-            JUGE_FIDELITE.format(contexte=contexte, reponse=ligne["reponse"]))
+        contexte = "\n\n".join(f"[{p['source']}] {p['texte']}" for p in ligne["passages"])
+        ligne["fidele"], ligne["juge_fidelite"] = juger(JUGE_FIDELITE.format(
+            question=item["question"], contexte=contexte, reponse=ligne["reponse"]))
 
 
 def proposer_seuil(lignes):
@@ -138,7 +141,8 @@ def resumer(etiquette, lignes, recherche_seule=False):
     resume["fidelite_reponses_donnees"] = pct(l["fidele"] is True for l in rep if l["statut"] != "refus")
     resume["refus_corrects"] = pct(l["refus_correct"] for l in non_rep)
     resume["latence_moyenne_s"] = round(statistics.mean(l["latence_s"] for l in lignes), 2)
-    resume["modele_juge"] = config.JUGE_MODEL
+    resume["modele_generateur"] = f"{config.LLM_PROVIDER}/{config.LLM_MODEL}"
+    resume["modele_juge"] = f"{config.JUGE_PROVIDER}/{config.JUGE_MODEL}"
     # Un refus n'a volontairement pas de verdict de fidélité : il n'est pas compté ici
     resume["verdicts_illisibles"] = sum(l["exacte"] is None for l in rep) + sum(
         l["fidele"] is None for l in rep if l["statut"] != "refus")
