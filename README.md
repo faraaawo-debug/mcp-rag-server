@@ -13,8 +13,9 @@ The server exposes two MCP tools:
 
 - `search_documents(query)`: returns the 3 most relevant excerpts, with
   their source file and their cosine similarity to the question.
-- `ask_question(query)`: writes an answer using only those excerpts, cites the source files, and
-  returns a reliability status: **RELIABLE**, **TO VERIFY** or **NO ANSWER**. When the information is not in the excerpts, the LLM is
+- `ask_question(query)`: first classifies the question with an intent router, then writes an
+  answer using only the retrieved excerpts, cites the source files, and returns the detected
+  intent and a reliability status: **RELIABLE**, **TO VERIFY** or **NO ANSWER**. When the information is not in the excerpts, the LLM is
   instructed to reply "I don't know.", which counts as a correct behaviour, not as an error.
 
 ## Architecture
@@ -27,9 +28,27 @@ Local embeddings (intfloat/multilingual-e5-small)
       ↓
 ChromaDB vector store (cosine similarity)
       ↓  server.py: 2 MCP tools
-search_documents → closest excerpts + source + similarity
-ask_question     → LLM answer (Mistral API, or Ollama locally) + sources + reliability status
+search_documents → closest excerpts + source + similarity (no LLM call)
+ask_question     → intent router (LLM) → retrieval adapted to the intent
+                   → LLM answer (Mistral API, or Ollama locally) + intent + sources + reliability status
 ```
+
+### Intent router (the agent part)
+
+The router is the only part of the project that behaves like an agent: before retrieval, an LLM
+call (`router.py`, temperature 0, JSON output, closed list of labels) decides how the question is
+handled.
+
+| The router decides | Effect |
+|---|---|
+| The intent: `definition`, `exercise`, `summary`, `comparison` or `off_topic` | Number of excerpts retrieved (3, or 5 for summaries and comparisons, whose answer is spread over several passages) |
+| `off_topic` | Direct refusal: no retrieval and no answer generation |
+| The document type (`lectures`, `assignments`...), only when the question names one | The search is limited to that type of document |
+
+Safety rules: an unknown or unreadable label falls back to the default strategy (3 excerpts, no
+filter), and a document-type filter is only kept if the question actually contains the name of
+that type. Without that rule, the LLM restricted the search to assignments for a question about
+an exercise found in a lecture, which would have hidden the right passage.
 
 Implementation details kept on purpose: temperature 0, generation time measured, re-runnable
 ingestion without duplicates, absolute paths (the server is started by Claude Desktop from any
@@ -62,17 +81,20 @@ file, the expected answer and a key sentence copied from the right passage.
   extracted.
 - **Answers**, graded by the LLM judge: correctness against the expected answer, and faithfulness
   to the excerpts (computed on the answers actually given, since a refusal makes no claim).
-- **Correct refusals** on the 8 questions without an answer, and mean **generation time**.
+- **Correct refusals** on the 8 questions without an answer, and mean **generation time** (time
+  spent in LLM calls: router and answer).
+- **Router**: share of the 23 questions whose detected intent matches the annotated intent.
 
 Each change was measured separately; detailed results are in `results/`.
 
 ### Results
 
-| Version | Key sentence @1 | @3 | @5 | MRR | Correctness | Faithfulness | Correct refusals | Mean time |
-|---|---|---|---|---|---|---|---|---|
-| Baseline: initial pipeline + `ministral-14b-2512` | 53 % (8/15) | 80 % (12/15) | 93 % (14/15) | 0.678 | 73 % (11/15) | 77 % (10/13) | 100 % (8/8) | 1.9 s |
-| 3a: PyMuPDF instead of pypdf (**current version**) | 67 % (10/15) | 87 % (13/15) | 93 % (14/15) | 0.761 | 80 % (12/15) | 93 % (13/14) | 100 % (8/8) | 2.0 s |
-| 3b: + BGE-base embeddings (tested, not kept) | 47 % (7/15) | 100 % (15/15) | 100 % (15/15) | 0.700 | 73 % (11/15) | 87 % (13/15) | 100 % (8/8) | 3.2 s |
+| Version | Key sentence @1 | @3 | @5 | MRR | Correct intent | Correctness | Faithfulness | Correct refusals | Mean time |
+|---|---|---|---|---|---|---|---|---|---|
+| Baseline: initial pipeline + `ministral-14b-2512` | 53 % (8/15) | 80 % (12/15) | 93 % (14/15) | 0.678 | n/a | 73 % (11/15) | 77 % (10/13) | 100 % (8/8) | 1.9 s |
+| 3a: PyMuPDF instead of pypdf | 67 % (10/15) | 87 % (13/15) | 93 % (14/15) | 0.761 | n/a | 80 % (12/15) | 93 % (13/14) | 100 % (8/8) | 2.0 s |
+| 3b: + BGE-base embeddings (tested, not kept) | 47 % (7/15) | 100 % (15/15) | 100 % (15/15) | 0.700 | n/a | 73 % (11/15) | 87 % (13/15) | 100 % (8/8) | 3.2 s |
+| 5: 3a + intent router (**current version**) | 67 % (10/15) | 87 % (13/15) | 93 % (14/15) | 0.761 | 74 % (17/23) | 80 % (12/15) | 100 % (14/14) | 100 % (8/8) | 2.8 s |
 
 How to read these numbers:
 
@@ -88,6 +110,15 @@ How to read these numbers:
   LLM; two questions moved from "I don't know." to a correct answer. Correctness did not improve,
   because verdicts on long answers (comparisons, summaries) changed for reasons unrelated to
   retrieval. e5-small was kept.
+- **5.** The retrieval columns are measured at fixed k without the router, so they do not change.
+  The router does not improve the answers on this test set (one more faithful answer is within the
+  noise). What it adds is control: off-topic questions are refused without retrieval or
+  generation, summaries and comparisons get more context, and the detected intent is shown to the
+  user. It costs one extra LLM call (about 0.9 s). Its mistakes: two course questions that the
+  documents do not answer were labelled `off_topic` (harmless here, since the right behaviour was
+  to refuse, but a real course question could be refused the same way), and some confusions
+  between `definition`, `exercise` and `comparison`. Its detected intents also varied by one
+  question between two runs, despite temperature 0.
 - **The LLM switch mattered most for refusals**: the local 7B model invented answers to questions
   the documents do not answer; `ministral-14b-2512` correctly refuses all 8.
 - The right file is ranked first in 80 to 100 % of cases depending on the version: with only
@@ -192,6 +223,8 @@ python evaluate.py --label my_version --regrade results/baseline.json
 - When the right passage is not among the 3 excerpts sent to the LLM, it answers "I don't know."
   rather than inventing an answer (2 of the 15 answerable questions in the baseline).
 - The LLM judge itself has not yet been validated against human annotations.
+- The intent router can label a genuine course question as `off_topic` and refuse it; its
+  accuracy (74 % on 23 questions) was measured on the same small test set.
 - PyMuPDF is licensed under AGPL-3.0: fine for an open-source project, but closed commercial use
   would require a commercial licence or switching back to pypdf (BSD licence).
 

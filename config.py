@@ -42,8 +42,14 @@ LLM_MAX_ATTEMPTS = 6
 CHUNK_WORDS = 200
 OVERLAP_WORDS = 40
 
-# Number of excerpts retrieved per question
+# Number of excerpts retrieved per question (default, and when the router fails)
 TOP_K = 3
+
+# Intent router (router.py): one LLM call before retrieval
+USE_ROUTER = True
+# Excerpts retrieved per detected intent: summaries and comparisons need more context
+TOP_K_BY_INTENT = {"definition": 3, "exercise": 3, "summary": 5, "comparison": 5}
+OFF_TOPIC_ANSWER = "I don't know. This question does not seem related to the course documents."
 
 # Evaluation: judge from a different model family than the generator (limits self-preference
 # bias), key in the GROQ_API_KEY environment variable

@@ -7,6 +7,7 @@ from sentence_transformers import SentenceTransformer
 
 import config
 import llm
+import router
 
 _model = None
 
@@ -44,15 +45,17 @@ def get_collection():
     )
 
 
-def search(question, k=config.TOP_K):
-    """Returns the k excerpts closest to the question, with their source."""
+def search(question, k=config.TOP_K, doc_type=None):
+    """Returns the k excerpts closest to the question, with their source.
+    With doc_type, only excerpts of that document type are searched; if there is none,
+    the search falls back to all documents."""
     collection = get_collection()
     vector = embed_queries([question])[0].tolist()
-    res = collection.query(
-        query_embeddings=[vector],
-        n_results=k,
-        include=["documents", "metadatas", "distances"],
-    )
+    query = {"query_embeddings": [vector], "n_results": k,
+             "include": ["documents", "metadatas", "distances"]}
+    res = collection.query(**query, where={"doc_type": doc_type}) if doc_type else None
+    if res is None or not res["documents"][0]:
+        res = collection.query(**query)
     passages = []
     for text, meta, distance in zip(res["documents"][0], res["metadatas"][0], res["distances"][0]):
         passages.append({
@@ -116,10 +119,22 @@ def similarity_scores(question, answer, passages):
 
 
 def answer_question(question, passages=None):
-    """Full pipeline: retrieval, generation, reliability status."""
+    """Full pipeline: routing, retrieval, generation, reliability status.
+    latency_s is the time spent in LLM calls (router + answer)."""
+    intent, doc_type, routing_time = None, None, 0.0
     if passages is None:
-        passages = search(question)
+        if config.USE_ROUTER:
+            start = time.perf_counter()
+            intent, doc_type = router.route(question)
+            routing_time = time.perf_counter() - start
+            if intent == "off_topic":
+                # Direct refusal: no retrieval and no generation
+                return {"answer": config.OFF_TOPIC_ANSWER, "sources": [], "passages": [],
+                        "scores": None, "overall_score": None, "status": "refusal",
+                        "latency_s": round(routing_time, 2), "intent": intent, "doc_type": None}
+        passages = search(question, k=router.top_k(intent), doc_type=doc_type)
     answer, latency = generate_answer(question, passages)
+    latency += routing_time
 
     if is_refusal(answer):
         # A refusal is correct behaviour, not an answer outside the documents
@@ -137,4 +152,6 @@ def answer_question(question, passages=None):
         "overall_score": overall_score,
         "status": status,
         "latency_s": round(latency, 2),
+        "intent": intent,
+        "doc_type": doc_type,
     }

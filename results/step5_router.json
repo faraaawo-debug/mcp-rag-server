@@ -1,0 +1,842 @@
+{
+  "summary": {
+    "version": "step5_router",
+    "questions": 23,
+    "file_found@1": "93 % (14/15)",
+    "key_sentence@1": "67 % (10/15)",
+    "file_found@3": "100 % (15/15)",
+    "key_sentence@3": "87 % (13/15)",
+    "file_found@5": "100 % (15/15)",
+    "key_sentence@5": "93 % (14/15)",
+    "mrr_key_sentence@5": 0.761,
+    "correct_intents": "74 % (17/23)",
+    "correctness": "80 % (12/15)",
+    "faithfulness_given_answers": "100 % (14/14)",
+    "correct_refusals": "100 % (8/8)",
+    "mean_latency_s": 2.83,
+    "generator_model": "mistral/ministral-14b-2512",
+    "judge_model": "groq/openai/gpt-oss-120b",
+    "unreadable_verdicts": 0,
+    "suggested_threshold": 0.5,
+    "indicator_accuracy": "86 %"
+  },
+  "details": [
+    {
+      "question": "What is research according to the lecture?",
+      "answerable": true,
+      "expected_intent": "definition",
+      "file_rank": 1,
+      "key_rank": 3,
+      "detected_intent": "definition",
+      "answer": "According to the lecture, research can be defined in the following ways:\n\n1. **\"A research is a systematic investigation to find new/different ways of solving a problem.\"** [research_methods_part1.pdf]\n2. **\"A research is a systematic investigation to seek new knowledge about some topic.\"** [research_methods_part1.pdf]\n\nAdditionally, it is described as **\"Exploring / Seeking for better solutions\"** to a problem that has transformed from a matter [research_methods_part1.pdf].",
+      "status": "reliable",
+      "overall_score": 0.839,
+      "latency_s": 4.72,
+      "sources": [
+        "research_methods_part1.pdf"
+      ],
+      "passages": [
+        {
+          "source": "research_methods_part1.pdf",
+          "chunk": 0,
+          "similarity": 0.801,
+          "text": "By Ts. Dr. Maythem Kamal Abbas Al-Adilee Asia Pacific University of Technology and Innovation Assistant Professor at SoC@APU Email: maythem.abbas@apu.edu.my Copyright © 2018 By Dr. M. K. Abbas 1  Speaker’s Profile PhD in Electrical and Electronics Engineering (IoT and AI) Assistant Professor (Academician) Head of Prof. MKA Research Unit. Former Ceo of Marble Arches Solutions and Consultancy IEEE Senior Member MBoT Professional Technologist (Ts) Microsoft Expert 21st Century Educator Accredited HRD Corp Trainer Research Interests: Artificial Intelligence (AI) Machine Learning (ML) Deep Learning (DL) Internet of Things (IoT) 2 Copyright © 2018 By Dr. M. K. Abbas  Copyright © 2018 By Dr. M. K. Abbas 3 PART-1 What is ‘Research’ and its components?  What is “Research”? Why do we need research? Who would do a research? Part 1 – Understanding Copyright © 2018 By Dr. M. K. Abbas 4  Copyright © 2018 By Dr. M. K. Abbas 5 Research Origin Al-Hasan Bin Al-Haytham Al-Basri ( 965 - 1040 A.C.) He set the very first systematic principles of the scientific researches those still in use. He was the very first scientist who created lens, those used for magnification and for eyeglasses during his era.  What is"
+        },
+        {
+          "source": "research_methods_part1.pdf",
+          "chunk": 2,
+          "similarity": 0.8,
+          "text": "have transformed to be a problem. • Every Problem, originally was a matter. Copyright © 2020 By Dr. M. K. Abbas 8 No Key  What is RESEARCH? PROBLEM Solution Exploring / Seeking for better solutions. Copyright © 2018 By Dr. M. K. Abbas 9  A research can be defined with either one of the following: A research is a systematic investigation to find new/different ways of solving a problem. A research is a systematic investigation to seek new knowledge about some topic. Copyright © 2018 By Dr. M. K. Abbas 10 What is RESEARCH?  Scenario Setup Two guys are thirsty. They have one single apple to share. And because they believe that they are equal to each other in term of rights, they have decided to divide the apple into two parts those must be as identical as they can (in quantity) to have it to quench their thirst. An Example Problem? Problem We want to solve Aim? What solves the problem? Objective What to do to achieve the aim(s). Scope? ? Methodology?  ? Copyright © 2018 By Dr. M. K. Abbas 11  An Example  Problem?  The two guys are thirsty, got no"
+        },
+        {
+          "source": "research_methods_part1.pdf",
+          "chunk": 8,
+          "similarity": 0.791,
+          "text": "developed to predict X? To develop a model for predicting X. Develop How can X be integrated into Y? To integrate X into Y. Integrate  Copyright © 2018 By Dr. M. K. Abbas 26 The Relation between Research Questions and Research Objectives Research Question Research Objective Example Verb RQ1: What is the relationship between digital literacy and academic performance? RO1: To investigate the relationship between digital literacy and academic performance. Investigate RQ2: How can a framework be designed to support automated assessment of students’ cognitive levels? RO2: To design a framework for automated assessment of students’ cognitive levels. Design RQ3: To what extent is the proposed framework valid according to expert evaluation? RO3: To validate the proposed framework using expert evaluation. Validate Attached Full List Document: The Relation between Research Questions and Research Objectives  IMPORTANT NOTE: “The verb does not mechanically determine the question wording. What matters is that the meaning of the RQ matches the meaning of the RO.” For example: RO: To evaluate the effectiveness of the proposed system. RQ: How effective is the proposed system? Copyright © 2018 By Dr. M. K. Abbas 27 The Relation between Research Questions and Research Objectives  Simple Golden"
+        }
+      ],
+      "correct": false,
+      "judge_correctness": "{\"verdict\":\"NO\"}",
+      "faithful": true,
+      "judge_faithfulness": "{\"verdict\":\"YES\"}"
+    },
+    {
+      "question": "What does the research scope of a study describe?",
+      "answerable": true,
+      "expected_intent": "definition",
+      "file_rank": 1,
+      "key_rank": 1,
+      "detected_intent": "definition",
+      "answer": "The research scope of a study describes the following, as stated in the excerpts:\n\n1. **What the research covers and what it does NOT cover** (e.g., the proposed methodology can divide **only one apple at a time** and assumes **apple seeds are removed**).\n2. **Limitations and delimitations** (e.g., the problem will be solved **partially**, and the methodology has specific constraints).\n3. **Advantages (up-sides) and disadvantages (down-sides)** of the chosen approach.\n4. **The extent to which the research will solve the defined problem(s)** (e.g., whether the methodology achieves the research aims or only addresses them partially).\n\n[research_methods_part1.pdf]",
+      "status": "reliable",
+      "overall_score": 0.858,
+      "latency_s": 3.23,
+      "sources": [
+        "research_methods_part1.pdf"
+      ],
+      "passages": [
+        {
+          "source": "research_methods_part1.pdf",
+          "chunk": 6,
+          "similarity": 0.821,
+          "text": "by the next section….”Research Scope” Copyright © 2018 By Dr. M. K. Abbas 20 Now…  Copyright © 2018 By Dr. M. K. Abbas 21 Research Scope  Research Scope 1. What does the research cover? And what it does NOT cover? 2. Limitations and Delimitations 3. Up-sides and Down-sides. 4. Until what extent, the proposed research work would solve the defined problem(s)? Copyright © 2018 By Dr. M. K. Abbas 22 This research would consider solving the problem partially as the two guys will not be fully quenched. The proposed methodology can be used for dividing ONLY ONE apple at a time. The proposed methodology works with the assumption that the apple seeds were taken off.  Research Questions Will The Chosen Methodology help in achieving the research aims? So How can we measure whether the answers for the research questions were positive or negative? Every topic has Performance Measures, Basically, The Research Questions would ask whether the Chosen Methodology affect or influence those Performance Measures positively or not? Copyright © 2018 By Dr. M. K. Abbas 23 How to integrate a Chosen Methodology to the exist on?  Copyright © 2018 By Dr. M. K. Abbas 24 Research"
+        },
+        {
+          "source": "research_methods_part1.pdf",
+          "chunk": 10,
+          "similarity": 0.82,
+          "text": "© 2018 By Dr. M. K. Abbas 29 Research Scope Research Scope  Part-1 Conclusion Copyright © 2018 By Dr. M. K. Abbas 30 We have a PROBLEM, that we AIM to solve through a set of OBJECTIVES those can be done as mentioned in details in the METHODOLOGY section. The suggested METHODOGOLOGY has Limitations and Delimitations (SCOPE). Now the QUESTION is; Will The Chosen Methodology help in achieving the research aims?  Copyright © 2018 By Dr. M. K. Abbas 31  Part-1 Exercise: One Page Research You are required to come up with a daily life problem and analyze it in an academic way with its solution. Copyright © 2018 By Dr. M. K. Abbas 32 1. Problem Scenario Setup 2. Problem Statement 3. Aim(s) 4. Objective(s) 5. Methodology 6. Scope 7. Question(s)  Copyright © 2018 By Dr. M. K. Abbas 33 End of PART-1"
+        },
+        {
+          "source": "research_methods_part1.pdf",
+          "chunk": 2,
+          "similarity": 0.813,
+          "text": "have transformed to be a problem. • Every Problem, originally was a matter. Copyright © 2020 By Dr. M. K. Abbas 8 No Key  What is RESEARCH? PROBLEM Solution Exploring / Seeking for better solutions. Copyright © 2018 By Dr. M. K. Abbas 9  A research can be defined with either one of the following: A research is a systematic investigation to find new/different ways of solving a problem. A research is a systematic investigation to seek new knowledge about some topic. Copyright © 2018 By Dr. M. K. Abbas 10 What is RESEARCH?  Scenario Setup Two guys are thirsty. They have one single apple to share. And because they believe that they are equal to each other in term of rights, they have decided to divide the apple into two parts those must be as identical as they can (in quantity) to have it to quench their thirst. An Example Problem? Problem We want to solve Aim? What solves the problem? Objective What to do to achieve the aim(s). Scope? ? Methodology?  ? Copyright © 2018 By Dr. M. K. Abbas 11  An Example  Problem?  The two guys are thirsty, got no"
+        }
+      ],
+      "correct": true,
+      "judge_correctness": "{\"verdict\":\"YES\"}",
+      "faithful": true,
+      "judge_faithfulness": "{\"verdict\": \"YES\"}"
+    },
+    {
+      "question": "I have to do the Part-1 \"One Page Research\" exercise. What do I have to do and which sections should I include?",
+      "answerable": true,
+      "expected_intent": "exercise",
+      "file_rank": 3,
+      "key_rank": 3,
+      "detected_intent": "exercise",
+      "answer": "For the **Part-1 \"One Page Research\"** exercise, you must include the following sections in your analysis of a daily life problem:\n\n1. **Problem Scenario Setup** – Describe the real-life problem you are addressing.\n2. **Problem Statement** – Provide a precise, concise statement of the problem (no references allowed).\n3. **Aim(s)** – State what you intend to achieve in your research.\n4. **Objective(s)** – Explain why you are addressing the problem (purpose of the research).\n5. **Methodology** – Outline the approach or methods you will use to analyze/solve the problem.\n6. **Scope** – Define the limitations and delimitations of your research.\n7. **Question(s)** – Formulate the research question(s) guiding your analysis.\n\n[research_methods_part1.pdf]",
+      "status": "reliable",
+      "overall_score": 0.893,
+      "latency_s": 3.61,
+      "sources": [
+        "ai_assignment_2026.pdf",
+        "bis_assignment_guidelines.pdf",
+        "research_methods_part1.pdf"
+      ],
+      "passages": [
+        {
+          "source": "ai_assignment_2026.pdf",
+          "chunk": 2,
+          "similarity": 0.858,
+          "text": "Innovation 2026 General Requirements Regardless of the selected approach, your work should demonstrate appropriate academic and research practices. You are expected to: 1. Select an appropriate and sufficiently focused topic within the field of Artificial Intelligence. 2. Clearly define the scope, motivation, objective(s), and/or research question(s) of the study. 3. Follow either the SLR approach or the Problem–Solution approach described above. 4. Conduct an appropriate review of relevant and credible academic literature. 5. Demonstrate critical thinking and analysis rather than merely summarizing or describing information. 6. Clearly explain and justify the methods, approaches, or techniques used in the study. 7. Present and critically discuss your findings or results. 8. Identify relevant limitations, challenges, research gaps, and/or future directions, where applicable. 9. Use appropriate figures, tables, diagrams, algorithms, equations, experimental results, or other forms of evidence where relevant. 10. Properly cite all sources and provide a complete reference list using the required referencing style. Provided Learning and Writing Materials To support you in completing this assignment, the following materials will be provided:  A paper template that must be used for preparing the final paper.  Several sample research papers that may be used as references to understand the expected organization,"
+        },
+        {
+          "source": "bis_assignment_guidelines.pdf",
+          "chunk": 2,
+          "similarity": 0.856,
+          "text": "& background/context), how you have created the insights, what is your strategies to solve the problem. Report Elements 1. Project Title: The title should be clear and unambiguous, reflecting what your project is about. 2. Introduction: All the necessary basics and key terms should be briefed here, hence that a reader can understand your work. Clearly tell the problem background with visual justification. 3. Problem statement / Definition / Question: A precise, concise statement of your assignment problem / idea. This should serve as the basis for formulating your aim and/or objectives of your assignment. This should not be more than a few lines (not more than five lines is recommended) and should not have any references/citations. • Eg: 1. Why the first two quarters sales are low in GBI? (Not appropriate) 2. The First half of the year the sales are low in GBI. (appropriate) 3. Some customers are left from GBI. (appropriate) 4. How to retain the customers in GBI? (Not appropriate) Note: This section and the following section can be a part of Introduction. 4. Aim & Objectives: In your aim should reflect what you want to do in your assignment and in your objectives reflect why"
+        },
+        {
+          "source": "research_methods_part1.pdf",
+          "chunk": 10,
+          "similarity": 0.85,
+          "text": "© 2018 By Dr. M. K. Abbas 29 Research Scope Research Scope  Part-1 Conclusion Copyright © 2018 By Dr. M. K. Abbas 30 We have a PROBLEM, that we AIM to solve through a set of OBJECTIVES those can be done as mentioned in details in the METHODOLOGY section. The suggested METHODOGOLOGY has Limitations and Delimitations (SCOPE). Now the QUESTION is; Will The Chosen Methodology help in achieving the research aims?  Copyright © 2018 By Dr. M. K. Abbas 31  Part-1 Exercise: One Page Research You are required to come up with a daily life problem and analyze it in an academic way with its solution. Copyright © 2018 By Dr. M. K. Abbas 32 1. Problem Scenario Setup 2. Problem Statement 3. Aim(s) 4. Objective(s) 5. Methodology 6. Scope 7. Question(s)  Copyright © 2018 By Dr. M. K. Abbas 33 End of PART-1"
+        }
+      ],
+      "correct": true,
+      "judge_correctness": "{\"verdict\":\"YES\"}",
+      "faithful": true,
+      "judge_faithfulness": "{\"verdict\":\"YES\"}"
+    },
+    {
+      "question": "What is the difference between a structured and an unstructured abstract?",
+      "answerable": true,
+      "expected_intent": "comparison",
+      "file_rank": 1,
+      "key_rank": 1,
+      "detected_intent": "comparison",
+      "answer": "Here is the difference between a **structured** and an **unstructured** abstract based on the provided excerpts:\n\n- **Structured Abstract**:\n  - Has **explicit headings** (e.g., Purpose, Methods, Results, Conclusion) to clearly separate sections.\n  - Example: Structured Abstract [research_methods_part2.pdf, p. 58].\n\n- **Unstructured Abstract**:\n  - Written as **one or more text paragraphs** without headings.\n  - Example: Unstructured Abstract [research_methods_part2.pdf, p. 59].\n\n[research_methods_part2.pdf]",
+      "status": "reliable",
+      "overall_score": 0.864,
+      "latency_s": 2.85,
+      "sources": [
+        "research_methods_part1.pdf",
+        "research_methods_part2.pdf"
+      ],
+      "passages": [
+        {
+          "source": "research_methods_part2.pdf",
+          "chunk": 7,
+          "similarity": 0.855,
+          "text": "Must have the most important parts Accurate Concise Captivating (grasps the reader’s attention) Copyright © 2018 By Dr. M. K. Abbas 55 ABSTRACTS  Writing an Abstract Copyright © 2018 By Dr. M. K. Abbas 56 The Two types of Abstracts Descriptive Informative Structured Unstructured Structured Unstructured  - It is a single paragraph of ~100 -200 words. - It consists of three parts Purpose Objective Methods Results Conclusion Descriptive Abstract Copyright © 2018 By Dr. M. K. Abbas 57  - It is the common type used for conferences and journal papers. - It consists of FIVE parts Purpose and Motivation Problem Methods Results Conclusion Informative Abstract Copyright © 2018 By Dr. M. K. Abbas 58  Structured abstracts have explicit headings showing what section of the abstract we are writing. Example: Structured Abstract Copyright © 2018 By Dr. M. K. Abbas 59  Unstructured abstracts are just one or more text paragraphs. Example: Unstructured Abstract Copyright © 2018 By Dr. M. K. Abbas 60  Abstract is ONE SINGLE PARAGRAPH that has three elements about the research:- Problem Statement Introduced Solution (Expected) Outcomes / Findings The most common way for write Abstract Copyright © 2018 By Dr. M."
+        },
+        {
+          "source": "research_methods_part2.pdf",
+          "chunk": 8,
+          "similarity": 0.821,
+          "text": "By Dr. M. K. Abbas 60  Abstract is ONE SINGLE PARAGRAPH that has three elements about the research:- Problem Statement Introduced Solution (Expected) Outcomes / Findings The most common way for write Abstract Copyright © 2018 By Dr. M. K. Abbas 61  Abstract 1. Introduction 2. Background 3. Problem Statement(s) 4. Aim(s) 5. Objective(s) 6. Research Question(s) 7. Research Scope 8. Related Work / Literature Review 9. Methodology 10. Conclusion Gantt Chart References Writing a Proposal Copyright © 2018 By Dr. M. K. Abbas 62  Abstract Chapter-1: Introduction  Overview  Background  Problem Statement(s)  Aim(s)  Objective(s)  Research Question(s)  Research Scope  Thesis Layout Chapter-2:Literature Review Chapter-3: Methodology Chapter-4: Results and Discussion Chapter-5: Conclusion and Future Recommendations References Writing a Dissertation Copyright © 2018 By Dr. M. K. Abbas 63  Chapters Language Copyright © 2018 By Dr. M. K. Abbas 64 Time Chapter-1 Chapter-2 Chapter-3 Chapter-4 PAST FUTURE PRESENT  Copyright © 2018 By Dr. M. K. Abbas 65 End of Part-2"
+        },
+        {
+          "source": "research_methods_part2.pdf",
+          "chunk": 6,
+          "similarity": 0.815,
+          "text": "LOOKING FOR a problem to make a statement  Support a Problem Statement by Literature Review Copyright © 2018 By Dr. M. K. Abbas 52 Think Precise: Critically criticize other methodologies to support your Problem Statement Time  Copyright © 2018 By Dr. M. K. Abbas 53 Writing the Problem Statement from Literature Review Reversed Tree Approach Tree Approach L5 L4 L3 L2 L1 P.S. F1 F2 F3 Facts (F) are derived from Literatures (L)  What is an Abstract? A brief summary of a research article (Thesis, journal paper, or a conference paper). Abstracts help the readers to grasp fast the main context that article is talking about. Copyright © 2018 By Dr. M. K. Abbas 54 ABSTRACTS  Why we need to write an Abstract? Convince the reader to read the rest of the paper. Or even seduce the reader to purchase the paper. What are the main features of abstracts? Summarizes all the parts of the article Must have the most important parts Accurate Concise Captivating (grasps the reader’s attention) Copyright © 2018 By Dr. M. K. Abbas 55 ABSTRACTS  Writing an Abstract Copyright © 2018 By Dr. M. K. Abbas 56 The Two types of"
+        },
+        {
+          "source": "research_methods_part1.pdf",
+          "chunk": 1,
+          "similarity": 0.796,
+          "text": "- 1040 A.C.) He set the very first systematic principles of the scientific researches those still in use. He was the very first scientist who created lens, those used for magnification and for eyeglasses during his era.  What is RESEARCH? 1. The systematic investigation into and study of materials and sources in order to establish facts and reach new conclusions. 2. Investigate systematically. 3. Meriam-Webster-1: careful study that is done to find and report new knowledge about something 4. Meriam-Webster-2: the activity of getting information about a subject Copyright © 2018 By Dr. M. K. Abbas 6  Copyright © 2018 By Dr. M. K. Abbas 7 Research Replay React Rejoin Retry . . . Etc. Similar Words  MATTER vs PROBLEM Matter is yet to be a Problem Search Re-search for a for a Matching-Key Solution Before the matter becomes a problem, we searched for a proper matching-key, when we did not find that key, then the matter have transformed to be a problem. • Every Problem, originally was a matter. Copyright © 2020 By Dr. M. K. Abbas 8 No Key  What is RESEARCH? PROBLEM Solution Exploring / Seeking for better solutions. Copyright © 2018 By"
+        },
+        {
+          "source": "research_methods_part1.pdf",
+          "chunk": 0,
+          "similarity": 0.794,
+          "text": "By Ts. Dr. Maythem Kamal Abbas Al-Adilee Asia Pacific University of Technology and Innovation Assistant Professor at SoC@APU Email: maythem.abbas@apu.edu.my Copyright © 2018 By Dr. M. K. Abbas 1  Speaker’s Profile PhD in Electrical and Electronics Engineering (IoT and AI) Assistant Professor (Academician) Head of Prof. MKA Research Unit. Former Ceo of Marble Arches Solutions and Consultancy IEEE Senior Member MBoT Professional Technologist (Ts) Microsoft Expert 21st Century Educator Accredited HRD Corp Trainer Research Interests: Artificial Intelligence (AI) Machine Learning (ML) Deep Learning (DL) Internet of Things (IoT) 2 Copyright © 2018 By Dr. M. K. Abbas  Copyright © 2018 By Dr. M. K. Abbas 3 PART-1 What is ‘Research’ and its components?  What is “Research”? Why do we need research? Who would do a research? Part 1 – Understanding Copyright © 2018 By Dr. M. K. Abbas 4  Copyright © 2018 By Dr. M. K. Abbas 5 Research Origin Al-Hasan Bin Al-Haytham Al-Basri ( 965 - 1040 A.C.) He set the very first systematic principles of the scientific researches those still in use. He was the very first scientist who created lens, those used for magnification and for eyeglasses during his era.  What is"
+        }
+      ],
+      "correct": true,
+      "judge_correctness": "{\"verdict\":\"YES\"}",
+      "faithful": true,
+      "judge_faithfulness": "{\"verdict\":\"YES\"}"
+    },
+    {
+      "question": "Compare Option A and Option B of the AI assignment.",
+      "answerable": true,
+      "expected_intent": "comparison",
+      "file_rank": 1,
+      "key_rank": 1,
+      "detected_intent": "exercise",
+      "answer": "Here is a comparison of **Option A (Systematic Literature Review - SLR)** and **Option B (Problem–Solution Research Paper)** based on the provided excerpts:\n\n### **Option A: Systematic Literature Review (SLR)**\n1. **Objective**:\n   - Synthesize and analyze **published research** on a selected AI topic to provide a **comprehensive understanding** of the field.\n   - Focuses on **critical analysis, comparison, and synthesis** of existing studies [ai_assignment_2026.pdf].\n\n2. **Key Requirements**:\n   - Address **research questions** and discuss:\n     - Current state of research\n     - Existing approaches/techniques\n     - Key findings\n     - Limitations, research gaps, and challenges\n     - Potential future research directions [ai_assignment_2026.pdf].\n   - Follow a **systematic review methodology**, including:\n     - Literature search process\n     - Study-selection criteria [ai_assignment_2026.pdf].\n\n3. **Structure**:\n   - Focuses on **reviewing, analyzing, and summarizing** existing work rather than proposing new solutions.\n\n4. **Academic Focus**:\n   - Demonstrates **critical engagement with academic literature** and ability to **formulate meaningful research questions** [ai_assignment_2026.pdf].\n\n---\n\n### **Option B: Problem–Solution Research Paper**\n1. **Objective**:\n   - Identify a **specific, clearly defined problem** within an AI topic and propose an **AI-based solution** to address it.\n   - Focuses on **application, design, and evaluation** of a new approach [ai_assignment_2026.pdf].\n\n2. **Key Requirements**:\n   - Clearly define:\n     - Problem statement and motivation\n     - Related work (existing solutions)\n     - Proposed methodology/solution\n     - Implementation/experimental setup\n     - Evaluation, results, and discussion\n     - Limitations and future improvements [ai_assignment_2026.pdf].\n   - Requires **design, development, implementation, testing, and evaluation** of the proposed solution using **suitable methods and performance measures** [ai_assignment_2026.pdf].\n\n3. **Structure**:\n   - Focuses on **original research**, including:\n     - Problem identification\n     - Solution design\n     - Practical implementation and validation.\n\n4. **Academic Focus**:\n   - Demonstrates **understanding and application of AI concepts/techniques** [ai_assignment_2026.pdf].\n   - Requires **hands-on development** (e.g., coding, experimentation) rather than just literature review.\n\n---\n### **Key Differences**\n| **Aspect**               | **Option A (SLR)**                          | **Option B (Problem–Solution)**               |\n|--------------------------|--------------------------------------------|-----------------------------------------------|\n| **Primary Focus**        | Reviewing and synthesizing existing research | Proposing and implementing a new AI solution  |\n| **Research Activity**    | Analytical (literature-based)              | Applied (development/evaluation-based)       |\n| **Methodology**          | Systematic literature search and analysis  | Design, implementation, and testing of a solution |\n| **Output**               | Comprehensive review paper                 | Research paper with original solution and validation |\n| **Skills Demonstrated**  | Critical analysis, synthesis, research formulation | AI application, problem-solving, technical implementation |\n| **Academic Rigor**       | Depth of literature review and gaps analysis | Practical contribution and empirical validation |\n\n---\n### **Common Requirements (Both Options)**\n- Must demonstrate **academic and research practices** (e.g., proper citations, structured argument).\n- Must be **well-focused within AI** and clearly defined.\n- May require **presentation and defense** in a seminar setting [ai_assignment_2026.pdf].\n\n[Source: *ai_assignment_2026.pdf*]",
+      "status": "reliable",
+      "overall_score": 0.875,
+      "latency_s": 8.68,
+      "sources": [
+        "ai_assignment_2026.pdf"
+      ],
+      "passages": [
+        {
+          "source": "ai_assignment_2026.pdf",
+          "chunk": 1,
+          "similarity": 0.865,
+          "text": "synthesize relevant published research to provide a comprehensive understanding of the selected topic. The paper should address appropriate research questions and discuss the current state of research, existing approaches or techniques, key findings, limitations, research gaps, challenges, and potential future research directions. The review should follow an appropriate and clearly explained systematic review methodology, including the literature search and study-selection process. Option B: Problem–Solution Research Paper Identify a specific and clearly defined problem within your selected AI topic and propose an appropriate AI-based solution to address that problem. Your work should demonstrate your understanding and application of relevant AI concepts and techniques. Where appropriate, you should design, develop, implement, test, and evaluate the proposed solution using suitable methods and performance measures. The paper should clearly explain the problem statement, motivation, related work, proposed methodology or solution, implementation/experimental setup, evaluation, results, discussion, limitations, and potential future improvements. CT098-3-M-Artificial Intelligence Individual Assignment 2 of 5 Master Asia Pacific University of Technology and Innovation 2026 General Requirements Regardless of the selected approach, your work should demonstrate appropriate academic and research practices. You are expected to: 1. Select an appropriate and sufficiently focused topic within the field of Artificial Intelligence. 2. Clearly define the"
+        },
+        {
+          "source": "ai_assignment_2026.pdf",
+          "chunk": 0,
+          "similarity": 0.858,
+          "text": "CT098-3-M-Artificial Intelligence Individual Assignment 1 of 5 Master Asia Pacific University of Technology and Innovation 2026 Artificial Intelligence Course Learning Outcome CLO1 Explain the fundamental Artificial Intelligence concepts, principles, and methods (C2, PLO1) Exam CLO2 Explain suitable AI techniques for a given problem using appropriate framework (C5, PLO2) Assignment CLO3 Demonstrate domain knowledge in terms of knowledge representation for a case study (A3, PL08) Assignment Assignment Overview and Instructions This assignment is designed to develop your ability to investigate an Artificial Intelligence (AI) topic from a research perspective, critically analyze existing knowledge, formulate research questions or problems, and communicate your work in the form of an academic research paper. You are required to select a topic related to Artificial Intelligence (AI) and prepare a research paper by following ONE of the following two approaches. Option A: Systematic Literature Review (SLR) Conduct a Systematic Literature Review (SLR) on your selected AI topic. Your study should systematically identify, select, analyze, compare, and synthesize relevant published research to provide a comprehensive understanding of the selected topic. The paper should address appropriate research questions and discuss the current state of research, existing approaches or techniques, key findings, limitations, research gaps, challenges, and potential future"
+        },
+        {
+          "source": "ai_assignment_2026.pdf",
+          "chunk": 6,
+          "similarity": 0.849,
+          "text": "from the University may be invited to attend the seminar. During the seminar, each student will be expected to:  Deliver a clear and professional presentation of the research.  Explain the motivation, research problem/questions, methodology, findings/results, and contributions of the work.  Demonstrate a clear understanding of the submitted paper. CT098-3-M-Artificial Intelligence Individual Assignment 4 of 5 Master Asia Pacific University of Technology and Innovation 2026  Answer questions related to the research and justify the decisions made during the study.  Participate professionally in academic discussion and respond appropriately to feedback and questions from the audience. Students should therefore prepare their papers with the understanding that they may be required to present and defend the work before an audience beyond the immediate class. The seminar aims to provide practical experience in research communication, knowledge sharing, academic discussion, and responding to questions and feedback from a wider academic audience. Expected Outcome By the end of this assignment, you should deliver TWO items: - Research Paper: have produced a well-structured AI research paper that demonstrates your ability to independently investigate an AI-related topic, critically engage with academic literature, formulate meaningful research questions or a specific problem, apply an appropriate research"
+        }
+      ],
+      "correct": true,
+      "judge_correctness": "{\"verdict\":\"YES\"}",
+      "faithful": true,
+      "judge_faithfulness": "{\"verdict\": \"YES\"}"
+    },
+    {
+      "question": "My research objective is \"To compare X and Y\". How should I phrase the matching research question?",
+      "answerable": true,
+      "expected_intent": "exercise",
+      "file_rank": 1,
+      "key_rank": 1,
+      "detected_intent": "exercise",
+      "answer": "Based on the excerpts, the matching research question for the objective **\"To compare X and Y\"** should be phrased as:\n\n**\"How does X compare with Y?\"** [research_methods_part1.pdf]",
+      "status": "reliable",
+      "overall_score": 0.881,
+      "latency_s": 1.58,
+      "sources": [
+        "research_methods_part1.pdf"
+      ],
+      "passages": [
+        {
+          "source": "research_methods_part1.pdf",
+          "chunk": 7,
+          "similarity": 0.849,
+          "text": "Methodology affect or influence those Performance Measures positively or not? Copyright © 2018 By Dr. M. K. Abbas 23 How to integrate a Chosen Methodology to the exist on?  Copyright © 2018 By Dr. M. K. Abbas 24 Research Questions Aim sets the destination goals Research Questions are what each objective is supposed to answer. Objectives are the steps to achieve the Goals. Aims sets the destination. Research Questions are the specific things we need to answer to show that we've hit those milestones. Objectives are the milestones we need to hit along the way. OR  Copyright © 2018 By Dr. M. K. Abbas 25 The Relation between Research Questions and Research Objectives Research Question Research Objective Example Verb How effective is X? To evaluate the effectiveness of X. Evaluate What factors affect X? To identify the factors affecting X. Identify How does X compare with Y? To compare X and Y. Compare How can a model be developed to predict X? To develop a model for predicting X. Develop How can X be integrated into Y? To integrate X into Y. Integrate  Copyright © 2018 By Dr. M. K. Abbas 26 The Relation between Research Questions"
+        },
+        {
+          "source": "research_methods_part1.pdf",
+          "chunk": 8,
+          "similarity": 0.844,
+          "text": "developed to predict X? To develop a model for predicting X. Develop How can X be integrated into Y? To integrate X into Y. Integrate  Copyright © 2018 By Dr. M. K. Abbas 26 The Relation between Research Questions and Research Objectives Research Question Research Objective Example Verb RQ1: What is the relationship between digital literacy and academic performance? RO1: To investigate the relationship between digital literacy and academic performance. Investigate RQ2: How can a framework be designed to support automated assessment of students’ cognitive levels? RO2: To design a framework for automated assessment of students’ cognitive levels. Design RQ3: To what extent is the proposed framework valid according to expert evaluation? RO3: To validate the proposed framework using expert evaluation. Validate Attached Full List Document: The Relation between Research Questions and Research Objectives  IMPORTANT NOTE: “The verb does not mechanically determine the question wording. What matters is that the meaning of the RQ matches the meaning of the RO.” For example: RO: To evaluate the effectiveness of the proposed system. RQ: How effective is the proposed system? Copyright © 2018 By Dr. M. K. Abbas 27 The Relation between Research Questions and Research Objectives  Simple Golden"
+        },
+        {
+          "source": "research_methods_part1.pdf",
+          "chunk": 9,
+          "similarity": 0.831,
+          "text": "the RO.” For example: RO: To evaluate the effectiveness of the proposed system. RQ: How effective is the proposed system? Copyright © 2018 By Dr. M. K. Abbas 27 The Relation between Research Questions and Research Objectives  Simple Golden rules: • Every objective must be addressed by at least one question. • But, a single objective can have two questions if it's multidimensional. • Sometimes, one well-crafted question can address two very tightly linked objectives. • However, for a master's or PhD thesis, one-to-one is the clearest and most common structure. Bottom line is, don't chase numbers, just make sure that every objective is answerable via at least one question. Copyright © 2018 By Dr. M. K. Abbas 28 The Relation between Research Questions and Research Objectives  Part-1 Conclusion Research Aim(s) Problem Statement Research Objectives Research Aim(s) Problem Statement Research Objectives Research Questions Research Questions Methodology Methodology Will The Chosen Methodology help in achieving the research aims? Copyright © 2018 By Dr. M. K. Abbas 29 Research Scope Research Scope  Part-1 Conclusion Copyright © 2018 By Dr. M. K. Abbas 30 We have a PROBLEM, that we AIM to solve through a set of OBJECTIVES those can"
+        }
+      ],
+      "correct": true,
+      "judge_correctness": "{\"verdict\":\"YES\"}",
+      "faithful": true,
+      "judge_faithfulness": "{\"verdict\":\"YES\"}"
+    },
+    {
+      "question": "What is an abstract?",
+      "answerable": true,
+      "expected_intent": "definition",
+      "file_rank": 1,
+      "key_rank": 1,
+      "detected_intent": "definition",
+      "answer": "An abstract is **a brief summary of a research article (such as a thesis, journal paper, or conference paper)**. It helps readers quickly grasp the main context of the article [research_methods_part2.pdf].",
+      "status": "reliable",
+      "overall_score": 0.835,
+      "latency_s": 1.59,
+      "sources": [
+        "research_methods_part2.pdf"
+      ],
+      "passages": [
+        {
+          "source": "research_methods_part2.pdf",
+          "chunk": 6,
+          "similarity": 0.831,
+          "text": "LOOKING FOR a problem to make a statement  Support a Problem Statement by Literature Review Copyright © 2018 By Dr. M. K. Abbas 52 Think Precise: Critically criticize other methodologies to support your Problem Statement Time  Copyright © 2018 By Dr. M. K. Abbas 53 Writing the Problem Statement from Literature Review Reversed Tree Approach Tree Approach L5 L4 L3 L2 L1 P.S. F1 F2 F3 Facts (F) are derived from Literatures (L)  What is an Abstract? A brief summary of a research article (Thesis, journal paper, or a conference paper). Abstracts help the readers to grasp fast the main context that article is talking about. Copyright © 2018 By Dr. M. K. Abbas 54 ABSTRACTS  Why we need to write an Abstract? Convince the reader to read the rest of the paper. Or even seduce the reader to purchase the paper. What are the main features of abstracts? Summarizes all the parts of the article Must have the most important parts Accurate Concise Captivating (grasps the reader’s attention) Copyright © 2018 By Dr. M. K. Abbas 55 ABSTRACTS  Writing an Abstract Copyright © 2018 By Dr. M. K. Abbas 56 The Two types of"
+        },
+        {
+          "source": "research_methods_part2.pdf",
+          "chunk": 7,
+          "similarity": 0.826,
+          "text": "Must have the most important parts Accurate Concise Captivating (grasps the reader’s attention) Copyright © 2018 By Dr. M. K. Abbas 55 ABSTRACTS  Writing an Abstract Copyright © 2018 By Dr. M. K. Abbas 56 The Two types of Abstracts Descriptive Informative Structured Unstructured Structured Unstructured  - It is a single paragraph of ~100 -200 words. - It consists of three parts Purpose Objective Methods Results Conclusion Descriptive Abstract Copyright © 2018 By Dr. M. K. Abbas 57  - It is the common type used for conferences and journal papers. - It consists of FIVE parts Purpose and Motivation Problem Methods Results Conclusion Informative Abstract Copyright © 2018 By Dr. M. K. Abbas 58  Structured abstracts have explicit headings showing what section of the abstract we are writing. Example: Structured Abstract Copyright © 2018 By Dr. M. K. Abbas 59  Unstructured abstracts are just one or more text paragraphs. Example: Unstructured Abstract Copyright © 2018 By Dr. M. K. Abbas 60  Abstract is ONE SINGLE PARAGRAPH that has three elements about the research:- Problem Statement Introduced Solution (Expected) Outcomes / Findings The most common way for write Abstract Copyright © 2018 By Dr. M."
+        },
+        {
+          "source": "research_methods_part2.pdf",
+          "chunk": 8,
+          "similarity": 0.816,
+          "text": "By Dr. M. K. Abbas 60  Abstract is ONE SINGLE PARAGRAPH that has three elements about the research:- Problem Statement Introduced Solution (Expected) Outcomes / Findings The most common way for write Abstract Copyright © 2018 By Dr. M. K. Abbas 61  Abstract 1. Introduction 2. Background 3. Problem Statement(s) 4. Aim(s) 5. Objective(s) 6. Research Question(s) 7. Research Scope 8. Related Work / Literature Review 9. Methodology 10. Conclusion Gantt Chart References Writing a Proposal Copyright © 2018 By Dr. M. K. Abbas 62  Abstract Chapter-1: Introduction  Overview  Background  Problem Statement(s)  Aim(s)  Objective(s)  Research Question(s)  Research Scope  Thesis Layout Chapter-2:Literature Review Chapter-3: Methodology Chapter-4: Results and Discussion Chapter-5: Conclusion and Future Recommendations References Writing a Dissertation Copyright © 2018 By Dr. M. K. Abbas 63  Chapters Language Copyright © 2018 By Dr. M. K. Abbas 64 Time Chapter-1 Chapter-2 Chapter-3 Chapter-4 PAST FUTURE PRESENT  Copyright © 2018 By Dr. M. K. Abbas 65 End of Part-2"
+        }
+      ],
+      "correct": true,
+      "judge_correctness": "{\"verdict\":\"YES\"}",
+      "faithful": true,
+      "judge_faithfulness": "{\"verdict\":\"YES\"}"
+    },
+    {
+      "question": "For my BIS assignment, is \"How to retain the customers in GBI?\" an appropriate problem statement?",
+      "answerable": true,
+      "expected_intent": "exercise",
+      "file_rank": 1,
+      "key_rank": 1,
+      "detected_intent": "exercise",
+      "answer": "No, \"How to retain the customers in GBI?\" is **not appropriate** as a problem statement.\n\nThe guidelines specify that a problem statement should be a **precise, concise statement of the problem/idea** (not a question) and should not exceed five lines. Instead, it should describe the issue directly, such as:\n- *\"Some customers are left from GBI.\"* (appropriate)\n- *\"The first half of the year the sales are low in GBI.\"* (appropriate)\n\nA question like *\"How to retain the customers in GBI?\"* is not suitable because it suggests a solution-oriented approach rather than defining the problem itself [bis_assignment_guidelines.pdf].",
+      "status": "reliable",
+      "overall_score": 0.91,
+      "latency_s": 4.2,
+      "sources": [
+        "bis_assignment_guidelines.pdf"
+      ],
+      "passages": [
+        {
+          "source": "bis_assignment_guidelines.pdf",
+          "chunk": 2,
+          "similarity": 0.899,
+          "text": "& background/context), how you have created the insights, what is your strategies to solve the problem. Report Elements 1. Project Title: The title should be clear and unambiguous, reflecting what your project is about. 2. Introduction: All the necessary basics and key terms should be briefed here, hence that a reader can understand your work. Clearly tell the problem background with visual justification. 3. Problem statement / Definition / Question: A precise, concise statement of your assignment problem / idea. This should serve as the basis for formulating your aim and/or objectives of your assignment. This should not be more than a few lines (not more than five lines is recommended) and should not have any references/citations. • Eg: 1. Why the first two quarters sales are low in GBI? (Not appropriate) 2. The First half of the year the sales are low in GBI. (appropriate) 3. Some customers are left from GBI. (appropriate) 4. How to retain the customers in GBI? (Not appropriate) Note: This section and the following section can be a part of Introduction. 4. Aim & Objectives: In your aim should reflect what you want to do in your assignment and in your objectives reflect why"
+        },
+        {
+          "source": "bis_assignment_guidelines.pdf",
+          "chunk": 3,
+          "similarity": 0.883,
+          "text": "in GBI? (Not appropriate) Note: This section and the following section can be a part of Introduction. 4. Aim & Objectives: In your aim should reflect what you want to do in your assignment and in your objectives reflect why you want to do this assignment. Your objectives should be clear, achievable, and measurable. You will need to show that the aim is feasible, and so there should be enough evidence provided to allow a reader to make a reasoned judgement on this. Aim: Should be a generic statement. You can refer the title, deliverable & what your project is? to set the aim. Eg: 1. The main aim of this assignment is to propose sales strategies for GBI - german-south. 2. The main aim of this assignment is to propose sales strategies for GBI. Objective: Should be specific, achievable, measurable & why this project? Eg: 1. The main objectives are: BIS- Assignment- Guidelines Prepared by Dr. M. Selvakumar Samuel. 3/3 ➔ To improve the sales in GBI-german south. ➔ To improve the sales in GBI. 5. Expected Deliverables: Give a brief outline of your expected deliverable in relation to the said objectives. Add any further details now that the"
+        },
+        {
+          "source": "bis_assignment_guidelines.pdf",
+          "chunk": 4,
+          "similarity": 0.864,
+          "text": "3/3 ➔ To improve the sales in GBI-german south. ➔ To improve the sales in GBI. 5. Expected Deliverables: Give a brief outline of your expected deliverable in relation to the said objectives. Add any further details now that the Proposal has been given more thought. Your final deliverables can be one or more than of the following Items: 1. Guidelines / Recommendations /Strategies /Solutions 2. Scorecards / KPI’s /Dashboards 3. Models (Not data models) 4. Report 5. Any other relevant items. General Instruction: • You can use any data analytical tools / applications / languages for your analysis process. • Check the assignment marking scheme for marks allocated to each section. • Regarding business understanding and data understanding, refer to the GBI scenario documents provided."
+        }
+      ],
+      "correct": true,
+      "judge_correctness": "{\"verdict\":\"YES\"}",
+      "faithful": true,
+      "judge_faithfulness": "{\"verdict\":\"YES\"}"
+    },
+    {
+      "question": "Summarize the process flow of the BIS assignment.",
+      "answerable": true,
+      "expected_intent": "summary",
+      "file_rank": 1,
+      "key_rank": 1,
+      "detected_intent": "summary",
+      "answer": "Here is the summarized **process flow of the BIS assignment** based on the provided excerpts:\n\n1. **Find and Understand Data**:\n   - Extract data from an **organizational memory** (e.g., GBI BIG DBMS).\n   - Understand the **organization** and the **data** collected.\n\n2. **Prepare and Explore Data**:\n   - **Prepare the data** for analysis.\n   - Conduct **descriptive analysis** (background study) to explore the data.\n\n3. **Problem Identification**:\n   - Use descriptive analysis outcomes to **identify/choose a problem**.\n\n4. **Set Objectives**:\n   - Define **suitable objectives** based on the problem.\n\n5. **Perform Analyses**:\n   - **Data Analysis (Diagnostic)**: Use organizational data (e.g., GBI DBMS) to find reasons and solutions.\n   - **Knowledge Analysis**: Use **research literatures, theories, and best practices** to identify reasons and solutions.\n   - **Information Analysis**: Use **web documents, news, government reports, and tools** (e.g., Brand24, Gen AI, web search engines) to gather insights.\n\n6. **Critical Evaluation & Insights**:\n   - **Summarize all findings** from the three analyses.\n   - **Critically evaluate** the outcomes to derive **insights**.\n\n7. **Derive Deliverables/Solutions**:\n   - Mix and match findings from **data, knowledge, and information analysis** to propose **solutions/strategies**.\n\n8. **Final Report**:\n   - Submit a structured report with:\n     - **Project title** (clear and unambiguous).\n     - **Introduction** (problem background, significance, and context).\n     - **Problem statement** (concise, no references).\n     - **Aim & Objectives** (generic aim + specific, measurable objectives).\n     - **Expected Deliverables** (e.g., strategies, scorecards, dashboards, models, or reports).\n   - Ensure **critical analysis** explains how deliverables were derived.\n\n---\n**Key Tools/Methods**:\n- **Data Analysis**: BI tools (Lumira Discovery, Power BI, Tableau).\n- **Information Analysis**: Online databases, primary data, web tools.\n- **Knowledge Analysis**: Professional databases, research literatures.\n\n[Source: *bis_assignment_guidelines.pdf*]",
+      "status": "reliable",
+      "overall_score": 0.879,
+      "latency_s": 9.27,
+      "sources": [
+        "bis_assignment_guidelines.pdf"
+      ],
+      "passages": [
+        {
+          "source": "bis_assignment_guidelines.pdf",
+          "chunk": 0,
+          "similarity": 0.905,
+          "text": "BIS- Assignment- Guidelines Prepared by Dr. M. Selvakumar Samuel. 1/3 Overview of your assignment process flow: Find a data from an organizational memory → Understand the organization → Understand the data → prepare the data → Explore the Data (Descriptive Analysis) – Background study →Find/choose a problem based on the descriptive analysis outcomes → Set suitable objective(s) → perform data analysis(diagnostic, Source: Org. data) analysis → perform knowledge analysis(source: articles and theories) → perform Information analysis (Source: web documents, news articles, government reports, etc) → summarize all the findings → Critically evaluate with all the analysis outcomes → derive insights → make deliverables / solutions → complete and submit a report with all required contents. Critical analysis and final deliverables: How did you derive the final deliverable should be critically explained in the critical analysis section. With the help of Data Analysis findings, Knowledge analysis and Information analysis findings. You have to mix and match the findings and critically evaluate to derive the final deliverables. Analysis Type Data Source Purpose Methods Tools Data Org. Data set. E.g. GBI BIG DBMS Problem identification, background study (Descriptive) and reason findings (Diagnostic). Note: In the poster only reasons you identified from the data"
+        },
+        {
+          "source": "bis_assignment_guidelines.pdf",
+          "chunk": 1,
+          "similarity": 0.858,
+          "text": "to derive the final deliverables. Analysis Type Data Source Purpose Methods Tools Data Org. Data set. E.g. GBI BIG DBMS Problem identification, background study (Descriptive) and reason findings (Diagnostic). Note: In the poster only reasons you identified from the data is required. Descriptive Diagnostic BI Tools such as Lumira Discovery, Power BI, Tableau, etc. Information Information Systems. Online Databases and Primary Data Identify reasons and solutions Brand24.com, Gen AI tools, Web Search Engines, etc. Knowledge Research Literatures, Proven Theories, and Company’s Best practises. Identify reasons and solutions Tools within the Professional Databases. Assignment Due Date: Will be informed later BIS- Assignment- Guidelines Prepared by Dr. M. Selvakumar Samuel. 2/3 Some content guidelines Introduction: You are required to develop a potential report as a part of this module requirements. There should be a clear connection made between your course learning outcomes and the chosen topic/problem/question. Basically, your report should clearly specify, what is your business problem/question/topic, why (significance of the problem & background/context), how you have created the insights, what is your strategies to solve the problem. Report Elements 1. Project Title: The title should be clear and unambiguous, reflecting what your project is about. 2. Introduction: All the necessary basics"
+        },
+        {
+          "source": "bis_assignment_guidelines.pdf",
+          "chunk": 3,
+          "similarity": 0.847,
+          "text": "in GBI? (Not appropriate) Note: This section and the following section can be a part of Introduction. 4. Aim & Objectives: In your aim should reflect what you want to do in your assignment and in your objectives reflect why you want to do this assignment. Your objectives should be clear, achievable, and measurable. You will need to show that the aim is feasible, and so there should be enough evidence provided to allow a reader to make a reasoned judgement on this. Aim: Should be a generic statement. You can refer the title, deliverable & what your project is? to set the aim. Eg: 1. The main aim of this assignment is to propose sales strategies for GBI - german-south. 2. The main aim of this assignment is to propose sales strategies for GBI. Objective: Should be specific, achievable, measurable & why this project? Eg: 1. The main objectives are: BIS- Assignment- Guidelines Prepared by Dr. M. Selvakumar Samuel. 3/3 ➔ To improve the sales in GBI-german south. ➔ To improve the sales in GBI. 5. Expected Deliverables: Give a brief outline of your expected deliverable in relation to the said objectives. Add any further details now that the"
+        },
+        {
+          "source": "bis_assignment_guidelines.pdf",
+          "chunk": 4,
+          "similarity": 0.842,
+          "text": "3/3 ➔ To improve the sales in GBI-german south. ➔ To improve the sales in GBI. 5. Expected Deliverables: Give a brief outline of your expected deliverable in relation to the said objectives. Add any further details now that the Proposal has been given more thought. Your final deliverables can be one or more than of the following Items: 1. Guidelines / Recommendations /Strategies /Solutions 2. Scorecards / KPI’s /Dashboards 3. Models (Not data models) 4. Report 5. Any other relevant items. General Instruction: • You can use any data analytical tools / applications / languages for your analysis process. • Check the assignment marking scheme for marks allocated to each section. • Regarding business understanding and data understanding, refer to the GBI scenario documents provided."
+        },
+        {
+          "source": "bis_assignment_guidelines.pdf",
+          "chunk": 2,
+          "similarity": 0.839,
+          "text": "& background/context), how you have created the insights, what is your strategies to solve the problem. Report Elements 1. Project Title: The title should be clear and unambiguous, reflecting what your project is about. 2. Introduction: All the necessary basics and key terms should be briefed here, hence that a reader can understand your work. Clearly tell the problem background with visual justification. 3. Problem statement / Definition / Question: A precise, concise statement of your assignment problem / idea. This should serve as the basis for formulating your aim and/or objectives of your assignment. This should not be more than a few lines (not more than five lines is recommended) and should not have any references/citations. • Eg: 1. Why the first two quarters sales are low in GBI? (Not appropriate) 2. The First half of the year the sales are low in GBI. (appropriate) 3. Some customers are left from GBI. (appropriate) 4. How to retain the customers in GBI? (Not appropriate) Note: This section and the following section can be a part of Introduction. 4. Aim & Objectives: In your aim should reflect what you want to do in your assignment and in your objectives reflect why"
+        }
+      ],
+      "correct": true,
+      "judge_correctness": "{\"verdict\":\"YES\"}",
+      "faithful": true,
+      "judge_faithfulness": "{\"verdict\":\"YES\"}"
+    },
+    {
+      "question": "What are the two faces of a problem statement?",
+      "answerable": true,
+      "expected_intent": "definition",
+      "file_rank": 1,
+      "key_rank": 2,
+      "detected_intent": "definition",
+      "answer": "The two faces of a problem statement are:\n\n1. **Real-life Effect** (the symptom or consequence observed in real life).\n2. **Technical Cause** (the underlying technical or theoretical issue causing the real-life effect).\n\nExample given:\n*\"The guys are Thirsty!\"* (Real-life Effect) due to *\"Do not know how to divide the apple equally!\"* (Technical Cause).\n[research_methods_part2.pdf]",
+      "status": "reliable",
+      "overall_score": 0.859,
+      "latency_s": 2.14,
+      "sources": [
+        "research_methods_part2.pdf"
+      ],
+      "passages": [
+        {
+          "source": "research_methods_part2.pdf",
+          "chunk": 5,
+          "similarity": 0.839,
+          "text": "economical crises. 2. To evaluate the developed framework via trial deployment in three medium-size enterprises. a) To evaluate the framework’s fitness. b) To evaluate the framework’s scalability. Research Objectives Sub Objectives  Copyright © 2018 By Dr. M. K. Abbas 48 Conducting Literature Review  Literature Review Copyright © 2018 By Dr. M. K. Abbas 49 Literature Review Problem Statement We have a problem statement we need to investigate and support We are LOOKING FOR a problem to make a statement  From Literature Review to Problem Statement (PS) Copyright © 2018 By Dr. M. K. Abbas 50 Think Ahead: Explore an Area or a field Think Straight: Look for and Study the field’s measurement factors and its challenges Think Specific: Conclude by narrowing down options towards a problem Time PS  Literature Review Copyright © 2018 By Dr. M. K. Abbas 51 Literature Review Problem Statement We have a problem statement we need to investigate and support We are LOOKING FOR a problem to make a statement  Support a Problem Statement by Literature Review Copyright © 2018 By Dr. M. K. Abbas 52 Think Precise: Critically criticize other methodologies to support your Problem Statement Time  Copyright ©"
+        },
+        {
+          "source": "research_methods_part2.pdf",
+          "chunk": 0,
+          "similarity": 0.827,
+          "text": " Copyright © 2018 By Dr. M. K. Abbas 34 PART-2 How to choose a Research Problem?  Is the problem of a high significance? Is the problem considered a hot topic for many researchers? Is the problem valid? Did anyone have solved this problem before? If the answer to 4 is “Yes”, then, How many of them? Many or little? If the answer to 4 is “Yes”, then, Is there any of them have solved the problem completely with very reasonable costs and very satisfying results? If the answer to 4 is “Yes”, then, How competitive your solution can be compares to theirs? What to Consider When Choosing a Problem Copyright © 2018 By Dr. M. K. Abbas 35  Copyright © 2018 By Dr. M. K. Abbas 36 How to form a Problem Statement?  Copyright © 2018 By Dr. M. K. Abbas 37 Problem Statement (P.S.) Faces Real-life Effect The guys are Thirsty! Technical Cause Do not know how to divide the apple equally! P.S.  Formula-1 Because of [this technical problem] existence, [this real-life symptom/problem] occurs. [An illustrative text to explain the link between the Technical and the real-life sides of the problem WITH evidence(s) [reference]"
+        },
+        {
+          "source": "research_methods_part2.pdf",
+          "chunk": 6,
+          "similarity": 0.823,
+          "text": "LOOKING FOR a problem to make a statement  Support a Problem Statement by Literature Review Copyright © 2018 By Dr. M. K. Abbas 52 Think Precise: Critically criticize other methodologies to support your Problem Statement Time  Copyright © 2018 By Dr. M. K. Abbas 53 Writing the Problem Statement from Literature Review Reversed Tree Approach Tree Approach L5 L4 L3 L2 L1 P.S. F1 F2 F3 Facts (F) are derived from Literatures (L)  What is an Abstract? A brief summary of a research article (Thesis, journal paper, or a conference paper). Abstracts help the readers to grasp fast the main context that article is talking about. Copyright © 2018 By Dr. M. K. Abbas 54 ABSTRACTS  Why we need to write an Abstract? Convince the reader to read the rest of the paper. Or even seduce the reader to purchase the paper. What are the main features of abstracts? Summarizes all the parts of the article Must have the most important parts Accurate Concise Captivating (grasps the reader’s attention) Copyright © 2018 By Dr. M. K. Abbas 55 ABSTRACTS  Writing an Abstract Copyright © 2018 By Dr. M. K. Abbas 56 The Two types of"
+        }
+      ],
+      "correct": true,
+      "judge_correctness": "{\"verdict\":\"YES\"}",
+      "faithful": true,
+      "judge_faithfulness": "{\"verdict\":\"YES\"}"
+    },
+    {
+      "question": "What is overfitting, according to the problem statement example?",
+      "answerable": true,
+      "expected_intent": "definition",
+      "file_rank": 1,
+      "key_rank": 1,
+      "detected_intent": "definition",
+      "answer": "According to the excerpts, **overfitting** is defined as:\n\n*\"The problem of overfitting in machine learning models poses a critical challenge, particularly in scenarios with limited labeled data or high-dimensional feature spaces. Overfitting occurs when a model captures noise or random fluctuations in the training data, leading to poor generalization performance on unseen data.\"* [research_methods_part2.pdf]",
+      "status": "reliable",
+      "overall_score": 0.863,
+      "latency_s": 2.15,
+      "sources": [
+        "research_methods_part2.pdf"
+      ],
+      "passages": [
+        {
+          "source": "research_methods_part2.pdf",
+          "chunk": 3,
+          "similarity": 0.857,
+          "text": "increasingly challenging for users to find relevant and accurate information efficiently. Despite advancements in search algorithms, users still struggle to obtain precise results tailored to their needs. Traditional keyword-based search engines often return irrelevant or outdated content, leading to user frustration and wasted time. Copyright © 2018 By Dr. M. K. Abbas 41 Problem Statement Examples  Example-4: The problem of overfitting in machine learning models poses a critical challenge, particularly in scenarios with limited labeled data or high-dimensional feature spaces. Overfitting occurs when a model captures noise or random fluctuations in the training data, leading to poor generalization performance on unseen data. This phenomenon is exacerbated in complex models such as deep neural networks, where millions of parameters can easily memorize training examples. Addressing overfitting is essential for building robust and reliable machine learning systems that can accurately generalize to new data. Copyright © 2018 By Dr. M. K. Abbas 42 Problem Statement Examples  Copyright © 2018 By Dr. M. K. Abbas 43 Developing Good Research Objectives  1. They should be presented briefly and concisely 2. They should be presented in logical sequence 3. They should be realistic (e.g., achieved within the expected timeframe, achieved within the"
+        },
+        {
+          "source": "research_methods_part2.pdf",
+          "chunk": 5,
+          "similarity": 0.808,
+          "text": "economical crises. 2. To evaluate the developed framework via trial deployment in three medium-size enterprises. a) To evaluate the framework’s fitness. b) To evaluate the framework’s scalability. Research Objectives Sub Objectives  Copyright © 2018 By Dr. M. K. Abbas 48 Conducting Literature Review  Literature Review Copyright © 2018 By Dr. M. K. Abbas 49 Literature Review Problem Statement We have a problem statement we need to investigate and support We are LOOKING FOR a problem to make a statement  From Literature Review to Problem Statement (PS) Copyright © 2018 By Dr. M. K. Abbas 50 Think Ahead: Explore an Area or a field Think Straight: Look for and Study the field’s measurement factors and its challenges Think Specific: Conclude by narrowing down options towards a problem Time PS  Literature Review Copyright © 2018 By Dr. M. K. Abbas 51 Literature Review Problem Statement We have a problem statement we need to investigate and support We are LOOKING FOR a problem to make a statement  Support a Problem Statement by Literature Review Copyright © 2018 By Dr. M. K. Abbas 52 Think Precise: Critically criticize other methodologies to support your Problem Statement Time  Copyright ©"
+        },
+        {
+          "source": "research_methods_part2.pdf",
+          "chunk": 0,
+          "similarity": 0.807,
+          "text": " Copyright © 2018 By Dr. M. K. Abbas 34 PART-2 How to choose a Research Problem?  Is the problem of a high significance? Is the problem considered a hot topic for many researchers? Is the problem valid? Did anyone have solved this problem before? If the answer to 4 is “Yes”, then, How many of them? Many or little? If the answer to 4 is “Yes”, then, Is there any of them have solved the problem completely with very reasonable costs and very satisfying results? If the answer to 4 is “Yes”, then, How competitive your solution can be compares to theirs? What to Consider When Choosing a Problem Copyright © 2018 By Dr. M. K. Abbas 35  Copyright © 2018 By Dr. M. K. Abbas 36 How to form a Problem Statement?  Copyright © 2018 By Dr. M. K. Abbas 37 Problem Statement (P.S.) Faces Real-life Effect The guys are Thirsty! Technical Cause Do not know how to divide the apple equally! P.S.  Formula-1 Because of [this technical problem] existence, [this real-life symptom/problem] occurs. [An illustrative text to explain the link between the Technical and the real-life sides of the problem WITH evidence(s) [reference]"
+        }
+      ],
+      "correct": true,
+      "judge_correctness": "{\"verdict\":\"YES\"}",
+      "faithful": true,
+      "judge_faithfulness": "{\"verdict\":\"YES\"}"
+    },
+    {
+      "question": "Summarize the rules on using generative AI in the AI assignment.",
+      "answerable": true,
+      "expected_intent": "summary",
+      "file_rank": 1,
+      "key_rank": 4,
+      "detected_intent": "summary",
+      "answer": "Here are the rules on using **Generative AI (Gen-AI)** in the AI assignment, based on the provided excerpts:\n\n1. **Permitted Use**:\n   - Gen-AI can be used **responsibly** as a **learning and supporting tool** to:\n     - Understand difficult AI or research concepts.\n     - Explore ideas and research directions.\n     - Clarify terminology.\n     - Learn how particular research methods work.\n     - Improve academic writing skills.\n   - It **must not replace** your own thinking, research, analysis, or writing [ai_assignment_2026.pdf].\n\n2. **Prohibited Use**:\n   - **Do not** directly copy and paste Gen-AI-generated content into the submitted paper.\n   - **Do not** present AI-generated work as your own original work.\n   - The final submission must demonstrate **your own understanding, critical thinking, analysis, interpretation, and academic writing** [ai_assignment_2026.pdf].\n\n3. **Academic Integrity**:\n   - All submitted papers will be checked for **text similarity and Gen-AI indicators** (e.g., via Turnitin).\n   - If an **unacceptably high similarity score or Gen-AI indicator** is detected, the lecturer may:\n     - Investigate further.\n     - Require you to explain, defend, or provide evidence for your work.\n   - **Inappropriate use** (e.g., plagiarism, misconduct) may result in:\n     - Mark reduction.\n     - A failing mark for the assignment, depending on the severity [ai_assignment_2026.pdf].\n\n4. **Responsibility**:\n   - You are **fully responsible** for the accuracy, originality, validity, citations, references, and overall quality of your submission [ai_assignment_2026.pdf].",
+      "status": "reliable",
+      "overall_score": 0.901,
+      "latency_s": 5.44,
+      "sources": [
+        "ai_assignment_2026.pdf"
+      ],
+      "passages": [
+        {
+          "source": "ai_assignment_2026.pdf",
+          "chunk": 3,
+          "similarity": 0.892,
+          "text": "you in completing this assignment, the following materials will be provided:  A paper template that must be used for preparing the final paper.  Several sample research papers that may be used as references to understand the expected organization, scope, depth, presentation, and academic writing style.  Guideline documents that provide additional guidance on how to prepare and write different sections of a research paper. Students should carefully study these resources before and during the preparation of their papers. The provided sample papers are intended only as references and examples. Their content must not be copied or closely reproduced. The final paper must follow the provided template. Students should replace the instructional or example content in the template with their own work while maintaining the required structure and formatting. Responsible Use of Generative AI and Academic Integrity The use of Generative Artificial Intelligence (Gen-AI) is permitted responsibly as a learning and supporting tool. CT098-3-M-Artificial Intelligence Individual Assignment 3 of 5 Master Asia Pacific University of Technology and Innovation 2026 For example, Gen-AI tools may be used to help you:  understand difficult AI or research concepts;  explore ideas and possible research directions;  clarify terminology;  learn how"
+        },
+        {
+          "source": "ai_assignment_2026.pdf",
+          "chunk": 2,
+          "similarity": 0.887,
+          "text": "Innovation 2026 General Requirements Regardless of the selected approach, your work should demonstrate appropriate academic and research practices. You are expected to: 1. Select an appropriate and sufficiently focused topic within the field of Artificial Intelligence. 2. Clearly define the scope, motivation, objective(s), and/or research question(s) of the study. 3. Follow either the SLR approach or the Problem–Solution approach described above. 4. Conduct an appropriate review of relevant and credible academic literature. 5. Demonstrate critical thinking and analysis rather than merely summarizing or describing information. 6. Clearly explain and justify the methods, approaches, or techniques used in the study. 7. Present and critically discuss your findings or results. 8. Identify relevant limitations, challenges, research gaps, and/or future directions, where applicable. 9. Use appropriate figures, tables, diagrams, algorithms, equations, experimental results, or other forms of evidence where relevant. 10. Properly cite all sources and provide a complete reference list using the required referencing style. Provided Learning and Writing Materials To support you in completing this assignment, the following materials will be provided:  A paper template that must be used for preparing the final paper.  Several sample research papers that may be used as references to understand the expected organization,"
+        },
+        {
+          "source": "ai_assignment_2026.pdf",
+          "chunk": 5,
+          "similarity": 0.872,
+          "text": "score or Gen-AI indicator is detected, the lecturer may further investigate the work and may require the student to explain, defend, or provide supporting evidence for the submitted work. Where inappropriate use of Gen-AI, plagiarism, or other forms of academic misconduct are established, the lecturer reserves the right to apply an appropriate penalty, which may include mark reduction or, in serious cases, a failing mark for the assignment, subject to the University's applicable academic-integrity policies and procedures. Important: Gen-AI may support your learning, but it must not replace your own thinking, research, analysis, or writing. End-of-Semester Research Seminar As part of this assessment, all completed research papers will be presented at the end of the semester in a small-scale research seminar. The seminar is intended to provide students with an opportunity to communicate their research in an academic setting and gain experience presenting and defending their work. In addition to the students enrolled in this class, other students and/or lecturers from the University may be invited to attend the seminar. During the seminar, each student will be expected to:  Deliver a clear and professional presentation of the research.  Explain the motivation, research problem/questions, methodology, findings/results, and contributions of"
+        },
+        {
+          "source": "ai_assignment_2026.pdf",
+          "chunk": 4,
+          "similarity": 0.871,
+          "text": "5 Master Asia Pacific University of Technology and Innovation 2026 For example, Gen-AI tools may be used to help you:  understand difficult AI or research concepts;  explore ideas and possible research directions;  clarify terminology;  learn how particular research methods work; or  improve your understanding of academic writing. However, Gen-AI must not be used as a substitute for your own thinking, analysis, or academic writing. Students must not directly copy and paste Gen-AI-generated content into the submitted paper or present AI-generated work as their own original work. Your final submission must demonstrate your own understanding, critical thinking, analysis, interpretation, and academic writing. You remain fully responsible for the accuracy, originality, validity, citations, references, and overall quality of everything included in your submission. All submitted papers will be evaluated by the lecturer and will be processed through Turnitin and/or other academic-integrity checking mechanisms to examine text similarity and indicators of Gen-AI-generated content. Where an unacceptably high similarity score or Gen-AI indicator is detected, the lecturer may further investigate the work and may require the student to explain, defend, or provide supporting evidence for the submitted work. Where inappropriate use of Gen-AI, plagiarism, or other forms of academic"
+        },
+        {
+          "source": "ai_assignment_2026.pdf",
+          "chunk": 1,
+          "similarity": 0.87,
+          "text": "synthesize relevant published research to provide a comprehensive understanding of the selected topic. The paper should address appropriate research questions and discuss the current state of research, existing approaches or techniques, key findings, limitations, research gaps, challenges, and potential future research directions. The review should follow an appropriate and clearly explained systematic review methodology, including the literature search and study-selection process. Option B: Problem–Solution Research Paper Identify a specific and clearly defined problem within your selected AI topic and propose an appropriate AI-based solution to address that problem. Your work should demonstrate your understanding and application of relevant AI concepts and techniques. Where appropriate, you should design, develop, implement, test, and evaluate the proposed solution using suitable methods and performance measures. The paper should clearly explain the problem statement, motivation, related work, proposed methodology or solution, implementation/experimental setup, evaluation, results, discussion, limitations, and potential future improvements. CT098-3-M-Artificial Intelligence Individual Assignment 2 of 5 Master Asia Pacific University of Technology and Innovation 2026 General Requirements Regardless of the selected approach, your work should demonstrate appropriate academic and research practices. You are expected to: 1. Select an appropriate and sufficiently focused topic within the field of Artificial Intelligence. 2. Clearly define the"
+        }
+      ],
+      "correct": true,
+      "judge_correctness": "{\"verdict\":\"YES\"}",
+      "faithful": true,
+      "judge_faithfulness": "{\"verdict\": \"YES\"}"
+    },
+    {
+      "question": "Summarize the conclusion of Part 1 of the research methods lecture.",
+      "answerable": true,
+      "expected_intent": "summary",
+      "file_rank": 1,
+      "key_rank": 1,
+      "detected_intent": "summary",
+      "answer": "The conclusion of **Part 1** of the research methods lecture by Dr. M. K. Abbas emphasizes the following key points:\n\n1. A **problem** is identified, which is then addressed through a set of **aims** and **objectives**.\n2. The **methodology** is proposed to achieve these objectives, but it also has **limitations and delimitations (scope)**.\n3. The central question is whether the **chosen methodology** will effectively help in achieving the **research aims** [research_methods_part1.pdf].\n\nAdditionally, the lecture outlines the structure for a **one-page research analysis**, which includes:\n- Problem Scenario Setup\n- Problem Statement\n- Aim(s)\n- Objective(s)\n- Methodology\n- Scope\n- Question(s) [research_methods_part1.pdf].",
+      "status": "reliable",
+      "overall_score": 0.878,
+      "latency_s": 2.8,
+      "sources": [
+        "research_methods_part1.pdf",
+        "research_methods_part2.pdf"
+      ],
+      "passages": [
+        {
+          "source": "research_methods_part1.pdf",
+          "chunk": 10,
+          "similarity": 0.847,
+          "text": "© 2018 By Dr. M. K. Abbas 29 Research Scope Research Scope  Part-1 Conclusion Copyright © 2018 By Dr. M. K. Abbas 30 We have a PROBLEM, that we AIM to solve through a set of OBJECTIVES those can be done as mentioned in details in the METHODOLOGY section. The suggested METHODOGOLOGY has Limitations and Delimitations (SCOPE). Now the QUESTION is; Will The Chosen Methodology help in achieving the research aims?  Copyright © 2018 By Dr. M. K. Abbas 31  Part-1 Exercise: One Page Research You are required to come up with a daily life problem and analyze it in an academic way with its solution. Copyright © 2018 By Dr. M. K. Abbas 32 1. Problem Scenario Setup 2. Problem Statement 3. Aim(s) 4. Objective(s) 5. Methodology 6. Scope 7. Question(s)  Copyright © 2018 By Dr. M. K. Abbas 33 End of PART-1"
+        },
+        {
+          "source": "research_methods_part1.pdf",
+          "chunk": 2,
+          "similarity": 0.843,
+          "text": "have transformed to be a problem. • Every Problem, originally was a matter. Copyright © 2020 By Dr. M. K. Abbas 8 No Key  What is RESEARCH? PROBLEM Solution Exploring / Seeking for better solutions. Copyright © 2018 By Dr. M. K. Abbas 9  A research can be defined with either one of the following: A research is a systematic investigation to find new/different ways of solving a problem. A research is a systematic investigation to seek new knowledge about some topic. Copyright © 2018 By Dr. M. K. Abbas 10 What is RESEARCH?  Scenario Setup Two guys are thirsty. They have one single apple to share. And because they believe that they are equal to each other in term of rights, they have decided to divide the apple into two parts those must be as identical as they can (in quantity) to have it to quench their thirst. An Example Problem? Problem We want to solve Aim? What solves the problem? Objective What to do to achieve the aim(s). Scope? ? Methodology?  ? Copyright © 2018 By Dr. M. K. Abbas 11  An Example  Problem?  The two guys are thirsty, got no"
+        },
+        {
+          "source": "research_methods_part1.pdf",
+          "chunk": 9,
+          "similarity": 0.842,
+          "text": "the RO.” For example: RO: To evaluate the effectiveness of the proposed system. RQ: How effective is the proposed system? Copyright © 2018 By Dr. M. K. Abbas 27 The Relation between Research Questions and Research Objectives  Simple Golden rules: • Every objective must be addressed by at least one question. • But, a single objective can have two questions if it's multidimensional. • Sometimes, one well-crafted question can address two very tightly linked objectives. • However, for a master's or PhD thesis, one-to-one is the clearest and most common structure. Bottom line is, don't chase numbers, just make sure that every objective is answerable via at least one question. Copyright © 2018 By Dr. M. K. Abbas 28 The Relation between Research Questions and Research Objectives  Part-1 Conclusion Research Aim(s) Problem Statement Research Objectives Research Aim(s) Problem Statement Research Objectives Research Questions Research Questions Methodology Methodology Will The Chosen Methodology help in achieving the research aims? Copyright © 2018 By Dr. M. K. Abbas 29 Research Scope Research Scope  Part-1 Conclusion Copyright © 2018 By Dr. M. K. Abbas 30 We have a PROBLEM, that we AIM to solve through a set of OBJECTIVES those can"
+        },
+        {
+          "source": "research_methods_part1.pdf",
+          "chunk": 7,
+          "similarity": 0.838,
+          "text": "Methodology affect or influence those Performance Measures positively or not? Copyright © 2018 By Dr. M. K. Abbas 23 How to integrate a Chosen Methodology to the exist on?  Copyright © 2018 By Dr. M. K. Abbas 24 Research Questions Aim sets the destination goals Research Questions are what each objective is supposed to answer. Objectives are the steps to achieve the Goals. Aims sets the destination. Research Questions are the specific things we need to answer to show that we've hit those milestones. Objectives are the milestones we need to hit along the way. OR  Copyright © 2018 By Dr. M. K. Abbas 25 The Relation between Research Questions and Research Objectives Research Question Research Objective Example Verb How effective is X? To evaluate the effectiveness of X. Evaluate What factors affect X? To identify the factors affecting X. Identify How does X compare with Y? To compare X and Y. Compare How can a model be developed to predict X? To develop a model for predicting X. Develop How can X be integrated into Y? To integrate X into Y. Integrate  Copyright © 2018 By Dr. M. K. Abbas 26 The Relation between Research Questions"
+        },
+        {
+          "source": "research_methods_part2.pdf",
+          "chunk": 8,
+          "similarity": 0.835,
+          "text": "By Dr. M. K. Abbas 60  Abstract is ONE SINGLE PARAGRAPH that has three elements about the research:- Problem Statement Introduced Solution (Expected) Outcomes / Findings The most common way for write Abstract Copyright © 2018 By Dr. M. K. Abbas 61  Abstract 1. Introduction 2. Background 3. Problem Statement(s) 4. Aim(s) 5. Objective(s) 6. Research Question(s) 7. Research Scope 8. Related Work / Literature Review 9. Methodology 10. Conclusion Gantt Chart References Writing a Proposal Copyright © 2018 By Dr. M. K. Abbas 62  Abstract Chapter-1: Introduction  Overview  Background  Problem Statement(s)  Aim(s)  Objective(s)  Research Question(s)  Research Scope  Thesis Layout Chapter-2:Literature Review Chapter-3: Methodology Chapter-4: Results and Discussion Chapter-5: Conclusion and Future Recommendations References Writing a Dissertation Copyright © 2018 By Dr. M. K. Abbas 63  Chapters Language Copyright © 2018 By Dr. M. K. Abbas 64 Time Chapter-1 Chapter-2 Chapter-3 Chapter-4 PAST FUTURE PRESENT  Copyright © 2018 By Dr. M. K. Abbas 65 End of Part-2"
+        }
+      ],
+      "correct": true,
+      "judge_correctness": "{\"verdict\":\"YES\"}",
+      "faithful": true,
+      "judge_faithfulness": "{\"verdict\": \"YES\"}"
+    },
+    {
+      "question": "What is the difference between a descriptive and an informative abstract?",
+      "answerable": true,
+      "expected_intent": "comparison",
+      "file_rank": 1,
+      "key_rank": 1,
+      "detected_intent": "definition",
+      "answer": "Here is the difference between a **descriptive** and an **informative** abstract based on the provided excerpts:\n\n- **Descriptive Abstract**:\n  - Commonly used for conferences and journal papers.\n  - Consists of **three parts**: Purpose, Objective, and Methods (but does **not** include Results or Conclusion).\n  - Typically **unstructured** (a single paragraph).\n\n- **Informative Abstract**:\n  - Consists of **five parts**: Purpose and Motivation, Problem, Methods, Results, and Conclusion.\n  - Provides a **full summary** of the research, including findings and outcomes.\n  - Can be **structured** (with explicit headings) or **unstructured** (one or more paragraphs).\n\n[**research_methods_part2.pdf**]",
+      "status": "reliable",
+      "overall_score": 0.868,
+      "latency_s": 3.15,
+      "sources": [
+        "research_methods_part2.pdf"
+      ],
+      "passages": [
+        {
+          "source": "research_methods_part2.pdf",
+          "chunk": 7,
+          "similarity": 0.831,
+          "text": "Must have the most important parts Accurate Concise Captivating (grasps the reader’s attention) Copyright © 2018 By Dr. M. K. Abbas 55 ABSTRACTS  Writing an Abstract Copyright © 2018 By Dr. M. K. Abbas 56 The Two types of Abstracts Descriptive Informative Structured Unstructured Structured Unstructured  - It is a single paragraph of ~100 -200 words. - It consists of three parts Purpose Objective Methods Results Conclusion Descriptive Abstract Copyright © 2018 By Dr. M. K. Abbas 57  - It is the common type used for conferences and journal papers. - It consists of FIVE parts Purpose and Motivation Problem Methods Results Conclusion Informative Abstract Copyright © 2018 By Dr. M. K. Abbas 58  Structured abstracts have explicit headings showing what section of the abstract we are writing. Example: Structured Abstract Copyright © 2018 By Dr. M. K. Abbas 59  Unstructured abstracts are just one or more text paragraphs. Example: Unstructured Abstract Copyright © 2018 By Dr. M. K. Abbas 60  Abstract is ONE SINGLE PARAGRAPH that has three elements about the research:- Problem Statement Introduced Solution (Expected) Outcomes / Findings The most common way for write Abstract Copyright © 2018 By Dr. M."
+        },
+        {
+          "source": "research_methods_part2.pdf",
+          "chunk": 8,
+          "similarity": 0.816,
+          "text": "By Dr. M. K. Abbas 60  Abstract is ONE SINGLE PARAGRAPH that has three elements about the research:- Problem Statement Introduced Solution (Expected) Outcomes / Findings The most common way for write Abstract Copyright © 2018 By Dr. M. K. Abbas 61  Abstract 1. Introduction 2. Background 3. Problem Statement(s) 4. Aim(s) 5. Objective(s) 6. Research Question(s) 7. Research Scope 8. Related Work / Literature Review 9. Methodology 10. Conclusion Gantt Chart References Writing a Proposal Copyright © 2018 By Dr. M. K. Abbas 62  Abstract Chapter-1: Introduction  Overview  Background  Problem Statement(s)  Aim(s)  Objective(s)  Research Question(s)  Research Scope  Thesis Layout Chapter-2:Literature Review Chapter-3: Methodology Chapter-4: Results and Discussion Chapter-5: Conclusion and Future Recommendations References Writing a Dissertation Copyright © 2018 By Dr. M. K. Abbas 63  Chapters Language Copyright © 2018 By Dr. M. K. Abbas 64 Time Chapter-1 Chapter-2 Chapter-3 Chapter-4 PAST FUTURE PRESENT  Copyright © 2018 By Dr. M. K. Abbas 65 End of Part-2"
+        },
+        {
+          "source": "research_methods_part2.pdf",
+          "chunk": 6,
+          "similarity": 0.808,
+          "text": "LOOKING FOR a problem to make a statement  Support a Problem Statement by Literature Review Copyright © 2018 By Dr. M. K. Abbas 52 Think Precise: Critically criticize other methodologies to support your Problem Statement Time  Copyright © 2018 By Dr. M. K. Abbas 53 Writing the Problem Statement from Literature Review Reversed Tree Approach Tree Approach L5 L4 L3 L2 L1 P.S. F1 F2 F3 Facts (F) are derived from Literatures (L)  What is an Abstract? A brief summary of a research article (Thesis, journal paper, or a conference paper). Abstracts help the readers to grasp fast the main context that article is talking about. Copyright © 2018 By Dr. M. K. Abbas 54 ABSTRACTS  Why we need to write an Abstract? Convince the reader to read the rest of the paper. Or even seduce the reader to purchase the paper. What are the main features of abstracts? Summarizes all the parts of the article Must have the most important parts Accurate Concise Captivating (grasps the reader’s attention) Copyright © 2018 By Dr. M. K. Abbas 55 ABSTRACTS  Writing an Abstract Copyright © 2018 By Dr. M. K. Abbas 56 The Two types of"
+        }
+      ],
+      "correct": false,
+      "judge_correctness": "{\"verdict\":\"NO\"}",
+      "faithful": true,
+      "judge_faithfulness": "{\"verdict\": \"YES\"}"
+    },
+    {
+      "question": "How long must my paper be if I choose the literature review option for the AI assignment?",
+      "answerable": true,
+      "expected_intent": "definition",
+      "file_rank": 1,
+      "key_rank": null,
+      "detected_intent": "exercise",
+      "answer": "I don't know.",
+      "status": "refusal",
+      "overall_score": null,
+      "latency_s": 1.51,
+      "sources": [
+        "ai_assignment_2026.pdf"
+      ],
+      "passages": [
+        {
+          "source": "ai_assignment_2026.pdf",
+          "chunk": 1,
+          "similarity": 0.9,
+          "text": "synthesize relevant published research to provide a comprehensive understanding of the selected topic. The paper should address appropriate research questions and discuss the current state of research, existing approaches or techniques, key findings, limitations, research gaps, challenges, and potential future research directions. The review should follow an appropriate and clearly explained systematic review methodology, including the literature search and study-selection process. Option B: Problem–Solution Research Paper Identify a specific and clearly defined problem within your selected AI topic and propose an appropriate AI-based solution to address that problem. Your work should demonstrate your understanding and application of relevant AI concepts and techniques. Where appropriate, you should design, develop, implement, test, and evaluate the proposed solution using suitable methods and performance measures. The paper should clearly explain the problem statement, motivation, related work, proposed methodology or solution, implementation/experimental setup, evaluation, results, discussion, limitations, and potential future improvements. CT098-3-M-Artificial Intelligence Individual Assignment 2 of 5 Master Asia Pacific University of Technology and Innovation 2026 General Requirements Regardless of the selected approach, your work should demonstrate appropriate academic and research practices. You are expected to: 1. Select an appropriate and sufficiently focused topic within the field of Artificial Intelligence. 2. Clearly define the"
+        },
+        {
+          "source": "ai_assignment_2026.pdf",
+          "chunk": 2,
+          "similarity": 0.885,
+          "text": "Innovation 2026 General Requirements Regardless of the selected approach, your work should demonstrate appropriate academic and research practices. You are expected to: 1. Select an appropriate and sufficiently focused topic within the field of Artificial Intelligence. 2. Clearly define the scope, motivation, objective(s), and/or research question(s) of the study. 3. Follow either the SLR approach or the Problem–Solution approach described above. 4. Conduct an appropriate review of relevant and credible academic literature. 5. Demonstrate critical thinking and analysis rather than merely summarizing or describing information. 6. Clearly explain and justify the methods, approaches, or techniques used in the study. 7. Present and critically discuss your findings or results. 8. Identify relevant limitations, challenges, research gaps, and/or future directions, where applicable. 9. Use appropriate figures, tables, diagrams, algorithms, equations, experimental results, or other forms of evidence where relevant. 10. Properly cite all sources and provide a complete reference list using the required referencing style. Provided Learning and Writing Materials To support you in completing this assignment, the following materials will be provided:  A paper template that must be used for preparing the final paper.  Several sample research papers that may be used as references to understand the expected organization,"
+        },
+        {
+          "source": "ai_assignment_2026.pdf",
+          "chunk": 0,
+          "similarity": 0.882,
+          "text": "CT098-3-M-Artificial Intelligence Individual Assignment 1 of 5 Master Asia Pacific University of Technology and Innovation 2026 Artificial Intelligence Course Learning Outcome CLO1 Explain the fundamental Artificial Intelligence concepts, principles, and methods (C2, PLO1) Exam CLO2 Explain suitable AI techniques for a given problem using appropriate framework (C5, PLO2) Assignment CLO3 Demonstrate domain knowledge in terms of knowledge representation for a case study (A3, PL08) Assignment Assignment Overview and Instructions This assignment is designed to develop your ability to investigate an Artificial Intelligence (AI) topic from a research perspective, critically analyze existing knowledge, formulate research questions or problems, and communicate your work in the form of an academic research paper. You are required to select a topic related to Artificial Intelligence (AI) and prepare a research paper by following ONE of the following two approaches. Option A: Systematic Literature Review (SLR) Conduct a Systematic Literature Review (SLR) on your selected AI topic. Your study should systematically identify, select, analyze, compare, and synthesize relevant published research to provide a comprehensive understanding of the selected topic. The paper should address appropriate research questions and discuss the current state of research, existing approaches or techniques, key findings, limitations, research gaps, challenges, and potential future"
+        }
+      ],
+      "correct": false,
+      "judge_correctness": "{\"verdict\":\"NO\"}",
+      "faithful": null,
+      "judge_faithfulness": null
+    },
+    {
+      "question": "How many marks is the oral presentation worth in the AI assignment?",
+      "answerable": false,
+      "expected_intent": "definition",
+      "detected_intent": "definition",
+      "answer": "I don't know.",
+      "status": "refusal",
+      "overall_score": null,
+      "latency_s": 1.54,
+      "sources": [
+        "ai_assignment_2026.pdf"
+      ],
+      "passages": [
+        {
+          "source": "ai_assignment_2026.pdf",
+          "chunk": 6,
+          "similarity": 0.849,
+          "text": "from the University may be invited to attend the seminar. During the seminar, each student will be expected to:  Deliver a clear and professional presentation of the research.  Explain the motivation, research problem/questions, methodology, findings/results, and contributions of the work.  Demonstrate a clear understanding of the submitted paper. CT098-3-M-Artificial Intelligence Individual Assignment 4 of 5 Master Asia Pacific University of Technology and Innovation 2026  Answer questions related to the research and justify the decisions made during the study.  Participate professionally in academic discussion and respond appropriately to feedback and questions from the audience. Students should therefore prepare their papers with the understanding that they may be required to present and defend the work before an audience beyond the immediate class. The seminar aims to provide practical experience in research communication, knowledge sharing, academic discussion, and responding to questions and feedback from a wider academic audience. Expected Outcome By the end of this assignment, you should deliver TWO items: - Research Paper: have produced a well-structured AI research paper that demonstrates your ability to independently investigate an AI-related topic, critically engage with academic literature, formulate meaningful research questions or a specific problem, apply an appropriate research"
+        },
+        {
+          "source": "ai_assignment_2026.pdf",
+          "chunk": 5,
+          "similarity": 0.843,
+          "text": "score or Gen-AI indicator is detected, the lecturer may further investigate the work and may require the student to explain, defend, or provide supporting evidence for the submitted work. Where inappropriate use of Gen-AI, plagiarism, or other forms of academic misconduct are established, the lecturer reserves the right to apply an appropriate penalty, which may include mark reduction or, in serious cases, a failing mark for the assignment, subject to the University's applicable academic-integrity policies and procedures. Important: Gen-AI may support your learning, but it must not replace your own thinking, research, analysis, or writing. End-of-Semester Research Seminar As part of this assessment, all completed research papers will be presented at the end of the semester in a small-scale research seminar. The seminar is intended to provide students with an opportunity to communicate their research in an academic setting and gain experience presenting and defending their work. In addition to the students enrolled in this class, other students and/or lecturers from the University may be invited to attend the seminar. During the seminar, each student will be expected to:  Deliver a clear and professional presentation of the research.  Explain the motivation, research problem/questions, methodology, findings/results, and contributions of"
+        },
+        {
+          "source": "ai_assignment_2026.pdf",
+          "chunk": 1,
+          "similarity": 0.843,
+          "text": "synthesize relevant published research to provide a comprehensive understanding of the selected topic. The paper should address appropriate research questions and discuss the current state of research, existing approaches or techniques, key findings, limitations, research gaps, challenges, and potential future research directions. The review should follow an appropriate and clearly explained systematic review methodology, including the literature search and study-selection process. Option B: Problem–Solution Research Paper Identify a specific and clearly defined problem within your selected AI topic and propose an appropriate AI-based solution to address that problem. Your work should demonstrate your understanding and application of relevant AI concepts and techniques. Where appropriate, you should design, develop, implement, test, and evaluate the proposed solution using suitable methods and performance measures. The paper should clearly explain the problem statement, motivation, related work, proposed methodology or solution, implementation/experimental setup, evaluation, results, discussion, limitations, and potential future improvements. CT098-3-M-Artificial Intelligence Individual Assignment 2 of 5 Master Asia Pacific University of Technology and Innovation 2026 General Requirements Regardless of the selected approach, your work should demonstrate appropriate academic and research practices. You are expected to: 1. Select an appropriate and sufficiently focused topic within the field of Artificial Intelligence. 2. Clearly define the"
+        }
+      ],
+      "correct_refusal": true
+    },
+    {
+      "question": "What percentage of the BIS assignment mark goes to each report section?",
+      "answerable": false,
+      "expected_intent": "definition",
+      "detected_intent": "exercise",
+      "answer": "I don't know.",
+      "status": "refusal",
+      "overall_score": null,
+      "latency_s": 1.49,
+      "sources": [
+        "bis_assignment_guidelines.pdf"
+      ],
+      "passages": [
+        {
+          "source": "bis_assignment_guidelines.pdf",
+          "chunk": 0,
+          "similarity": 0.849,
+          "text": "BIS- Assignment- Guidelines Prepared by Dr. M. Selvakumar Samuel. 1/3 Overview of your assignment process flow: Find a data from an organizational memory → Understand the organization → Understand the data → prepare the data → Explore the Data (Descriptive Analysis) – Background study →Find/choose a problem based on the descriptive analysis outcomes → Set suitable objective(s) → perform data analysis(diagnostic, Source: Org. data) analysis → perform knowledge analysis(source: articles and theories) → perform Information analysis (Source: web documents, news articles, government reports, etc) → summarize all the findings → Critically evaluate with all the analysis outcomes → derive insights → make deliverables / solutions → complete and submit a report with all required contents. Critical analysis and final deliverables: How did you derive the final deliverable should be critically explained in the critical analysis section. With the help of Data Analysis findings, Knowledge analysis and Information analysis findings. You have to mix and match the findings and critically evaluate to derive the final deliverables. Analysis Type Data Source Purpose Methods Tools Data Org. Data set. E.g. GBI BIG DBMS Problem identification, background study (Descriptive) and reason findings (Diagnostic). Note: In the poster only reasons you identified from the data"
+        },
+        {
+          "source": "bis_assignment_guidelines.pdf",
+          "chunk": 1,
+          "similarity": 0.844,
+          "text": "to derive the final deliverables. Analysis Type Data Source Purpose Methods Tools Data Org. Data set. E.g. GBI BIG DBMS Problem identification, background study (Descriptive) and reason findings (Diagnostic). Note: In the poster only reasons you identified from the data is required. Descriptive Diagnostic BI Tools such as Lumira Discovery, Power BI, Tableau, etc. Information Information Systems. Online Databases and Primary Data Identify reasons and solutions Brand24.com, Gen AI tools, Web Search Engines, etc. Knowledge Research Literatures, Proven Theories, and Company’s Best practises. Identify reasons and solutions Tools within the Professional Databases. Assignment Due Date: Will be informed later BIS- Assignment- Guidelines Prepared by Dr. M. Selvakumar Samuel. 2/3 Some content guidelines Introduction: You are required to develop a potential report as a part of this module requirements. There should be a clear connection made between your course learning outcomes and the chosen topic/problem/question. Basically, your report should clearly specify, what is your business problem/question/topic, why (significance of the problem & background/context), how you have created the insights, what is your strategies to solve the problem. Report Elements 1. Project Title: The title should be clear and unambiguous, reflecting what your project is about. 2. Introduction: All the necessary basics"
+        },
+        {
+          "source": "bis_assignment_guidelines.pdf",
+          "chunk": 2,
+          "similarity": 0.833,
+          "text": "& background/context), how you have created the insights, what is your strategies to solve the problem. Report Elements 1. Project Title: The title should be clear and unambiguous, reflecting what your project is about. 2. Introduction: All the necessary basics and key terms should be briefed here, hence that a reader can understand your work. Clearly tell the problem background with visual justification. 3. Problem statement / Definition / Question: A precise, concise statement of your assignment problem / idea. This should serve as the basis for formulating your aim and/or objectives of your assignment. This should not be more than a few lines (not more than five lines is recommended) and should not have any references/citations. • Eg: 1. Why the first two quarters sales are low in GBI? (Not appropriate) 2. The First half of the year the sales are low in GBI. (appropriate) 3. Some customers are left from GBI. (appropriate) 4. How to retain the customers in GBI? (Not appropriate) Note: This section and the following section can be a part of Introduction. 4. Aim & Objectives: In your aim should reflect what you want to do in your assignment and in your objectives reflect why"
+        }
+      ],
+      "correct_refusal": true
+    },
+    {
+      "question": "Which sampling techniques should I use for a survey in quantitative research?",
+      "answerable": false,
+      "expected_intent": "exercise",
+      "detected_intent": "off_topic",
+      "answer": "I don't know. This question does not seem related to the course documents.",
+      "status": "refusal",
+      "overall_score": null,
+      "latency_s": 0.65,
+      "sources": [],
+      "passages": [],
+      "correct_refusal": true
+    },
+    {
+      "question": "What is the difference between qualitative and quantitative research?",
+      "answerable": false,
+      "expected_intent": "comparison",
+      "detected_intent": "comparison",
+      "answer": "I don't know.",
+      "status": "refusal",
+      "overall_score": null,
+      "latency_s": 1.64,
+      "sources": [
+        "research_methods_part1.pdf",
+        "research_methods_part2.pdf"
+      ],
+      "passages": [
+        {
+          "source": "research_methods_part1.pdf",
+          "chunk": 2,
+          "similarity": 0.819,
+          "text": "have transformed to be a problem. • Every Problem, originally was a matter. Copyright © 2020 By Dr. M. K. Abbas 8 No Key  What is RESEARCH? PROBLEM Solution Exploring / Seeking for better solutions. Copyright © 2018 By Dr. M. K. Abbas 9  A research can be defined with either one of the following: A research is a systematic investigation to find new/different ways of solving a problem. A research is a systematic investigation to seek new knowledge about some topic. Copyright © 2018 By Dr. M. K. Abbas 10 What is RESEARCH?  Scenario Setup Two guys are thirsty. They have one single apple to share. And because they believe that they are equal to each other in term of rights, they have decided to divide the apple into two parts those must be as identical as they can (in quantity) to have it to quench their thirst. An Example Problem? Problem We want to solve Aim? What solves the problem? Objective What to do to achieve the aim(s). Scope? ? Methodology?  ? Copyright © 2018 By Dr. M. K. Abbas 11  An Example  Problem?  The two guys are thirsty, got no"
+        },
+        {
+          "source": "research_methods_part1.pdf",
+          "chunk": 9,
+          "similarity": 0.811,
+          "text": "the RO.” For example: RO: To evaluate the effectiveness of the proposed system. RQ: How effective is the proposed system? Copyright © 2018 By Dr. M. K. Abbas 27 The Relation between Research Questions and Research Objectives  Simple Golden rules: • Every objective must be addressed by at least one question. • But, a single objective can have two questions if it's multidimensional. • Sometimes, one well-crafted question can address two very tightly linked objectives. • However, for a master's or PhD thesis, one-to-one is the clearest and most common structure. Bottom line is, don't chase numbers, just make sure that every objective is answerable via at least one question. Copyright © 2018 By Dr. M. K. Abbas 28 The Relation between Research Questions and Research Objectives  Part-1 Conclusion Research Aim(s) Problem Statement Research Objectives Research Aim(s) Problem Statement Research Objectives Research Questions Research Questions Methodology Methodology Will The Chosen Methodology help in achieving the research aims? Copyright © 2018 By Dr. M. K. Abbas 29 Research Scope Research Scope  Part-1 Conclusion Copyright © 2018 By Dr. M. K. Abbas 30 We have a PROBLEM, that we AIM to solve through a set of OBJECTIVES those can"
+        },
+        {
+          "source": "research_methods_part2.pdf",
+          "chunk": 8,
+          "similarity": 0.809,
+          "text": "By Dr. M. K. Abbas 60  Abstract is ONE SINGLE PARAGRAPH that has three elements about the research:- Problem Statement Introduced Solution (Expected) Outcomes / Findings The most common way for write Abstract Copyright © 2018 By Dr. M. K. Abbas 61  Abstract 1. Introduction 2. Background 3. Problem Statement(s) 4. Aim(s) 5. Objective(s) 6. Research Question(s) 7. Research Scope 8. Related Work / Literature Review 9. Methodology 10. Conclusion Gantt Chart References Writing a Proposal Copyright © 2018 By Dr. M. K. Abbas 62  Abstract Chapter-1: Introduction  Overview  Background  Problem Statement(s)  Aim(s)  Objective(s)  Research Question(s)  Research Scope  Thesis Layout Chapter-2:Literature Review Chapter-3: Methodology Chapter-4: Results and Discussion Chapter-5: Conclusion and Future Recommendations References Writing a Dissertation Copyright © 2018 By Dr. M. K. Abbas 63  Chapters Language Copyright © 2018 By Dr. M. K. Abbas 64 Time Chapter-1 Chapter-2 Chapter-3 Chapter-4 PAST FUTURE PRESENT  Copyright © 2018 By Dr. M. K. Abbas 65 End of Part-2"
+        },
+        {
+          "source": "research_methods_part1.pdf",
+          "chunk": 8,
+          "similarity": 0.808,
+          "text": "developed to predict X? To develop a model for predicting X. Develop How can X be integrated into Y? To integrate X into Y. Integrate  Copyright © 2018 By Dr. M. K. Abbas 26 The Relation between Research Questions and Research Objectives Research Question Research Objective Example Verb RQ1: What is the relationship between digital literacy and academic performance? RO1: To investigate the relationship between digital literacy and academic performance. Investigate RQ2: How can a framework be designed to support automated assessment of students’ cognitive levels? RO2: To design a framework for automated assessment of students’ cognitive levels. Design RQ3: To what extent is the proposed framework valid according to expert evaluation? RO3: To validate the proposed framework using expert evaluation. Validate Attached Full List Document: The Relation between Research Questions and Research Objectives  IMPORTANT NOTE: “The verb does not mechanically determine the question wording. What matters is that the meaning of the RQ matches the meaning of the RO.” For example: RO: To evaluate the effectiveness of the proposed system. RQ: How effective is the proposed system? Copyright © 2018 By Dr. M. K. Abbas 27 The Relation between Research Questions and Research Objectives  Simple Golden"
+        },
+        {
+          "source": "research_methods_part1.pdf",
+          "chunk": 0,
+          "similarity": 0.798,
+          "text": "By Ts. Dr. Maythem Kamal Abbas Al-Adilee Asia Pacific University of Technology and Innovation Assistant Professor at SoC@APU Email: maythem.abbas@apu.edu.my Copyright © 2018 By Dr. M. K. Abbas 1  Speaker’s Profile PhD in Electrical and Electronics Engineering (IoT and AI) Assistant Professor (Academician) Head of Prof. MKA Research Unit. Former Ceo of Marble Arches Solutions and Consultancy IEEE Senior Member MBoT Professional Technologist (Ts) Microsoft Expert 21st Century Educator Accredited HRD Corp Trainer Research Interests: Artificial Intelligence (AI) Machine Learning (ML) Deep Learning (DL) Internet of Things (IoT) 2 Copyright © 2018 By Dr. M. K. Abbas  Copyright © 2018 By Dr. M. K. Abbas 3 PART-1 What is ‘Research’ and its components?  What is “Research”? Why do we need research? Who would do a research? Part 1 – Understanding Copyright © 2018 By Dr. M. K. Abbas 4  Copyright © 2018 By Dr. M. K. Abbas 5 Research Origin Al-Hasan Bin Al-Haytham Al-Basri ( 965 - 1040 A.C.) He set the very first systematic principles of the scientific researches those still in use. He was the very first scientist who created lens, those used for magnification and for eyeglasses during his era.  What is"
+        }
+      ],
+      "correct_refusal": true
+    },
+    {
+      "question": "What was GBI's total revenue last year?",
+      "answerable": false,
+      "expected_intent": "definition",
+      "detected_intent": "off_topic",
+      "answer": "I don't know. This question does not seem related to the course documents.",
+      "status": "refusal",
+      "overall_score": null,
+      "latency_s": 0.82,
+      "sources": [],
+      "passages": [],
+      "correct_refusal": true
+    },
+    {
+      "question": "What is the capital of Australia?",
+      "answerable": false,
+      "expected_intent": "off_topic",
+      "detected_intent": "off_topic",
+      "answer": "I don't know. This question does not seem related to the course documents.",
+      "status": "refusal",
+      "overall_score": null,
+      "latency_s": 0.75,
+      "sources": [],
+      "passages": [],
+      "correct_refusal": true
+    },
+    {
+      "question": "Give me a recipe for chocolate cake.",
+      "answerable": false,
+      "expected_intent": "off_topic",
+      "detected_intent": "off_topic",
+      "answer": "I don't know. This question does not seem related to the course documents.",
+      "status": "refusal",
+      "overall_score": null,
+      "latency_s": 0.63,
+      "sources": [],
+      "passages": [],
+      "correct_refusal": true
+    },
+    {
+      "question": "Who won the 2022 FIFA World Cup?",
+      "answerable": false,
+      "expected_intent": "off_topic",
+      "detected_intent": "off_topic",
+      "answer": "I don't know. This question does not seem related to the course documents.",
+      "status": "refusal",
+      "overall_score": null,
+      "latency_s": 0.54,
+      "sources": [],
+      "passages": [],
+      "correct_refusal": true
+    }
+  ]
+}

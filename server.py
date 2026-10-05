@@ -27,7 +27,12 @@ STATUSES = {
 
 def format_result(result):
     lines = [result["answer"], "", "---"]
-    lines.append("Sources: " + ", ".join(result["sources"]))
+    if result.get("intent"):
+        intent = f"Detected intent: {result['intent']}"
+        if result.get("doc_type"):
+            intent += f" (search limited to: {result['doc_type']})"
+        lines.append(intent)
+    lines.append("Sources: " + (", ".join(result["sources"]) or "none"))
     status = STATUSES[result["status"]]
     if result["overall_score"] is not None:
         status += f" (score {result['overall_score']:.2f})"
@@ -64,7 +69,8 @@ async def ask_question(query: str) -> str:
     # The LLM and the embeddings are blocking: they run outside the asyncio event loop
     result = await asyncio.to_thread(answer_question, query)
     logger.info(
-        f"Status: {result['status']} | score: {result['overall_score']} | "
+        f"Intent: {result['intent']} | doc type: {result['doc_type']} | "
+        f"status: {result['status']} | score: {result['overall_score']} | "
         f"scores: {result['scores']} | latency: {result['latency_s']} s"
     )
     return format_result(result)
@@ -73,5 +79,6 @@ async def ask_question(query: str) -> str:
 if __name__ == "__main__":
     logger.info("Loading the embedding model...")
     get_model()  # loaded at startup so that the first question is not slow
-    logger.info(f"Starting the MCP server (LLM: {config.LLM_PROVIDER}/{config.LLM_MODEL})")
+    logger.info(f"Starting the MCP server (LLM: {config.LLM_PROVIDER}/{config.LLM_MODEL}, "
+                f"router: {'on' if config.USE_ROUTER else 'off'})")
     mcp.run()  # stdio transport: Claude Desktop launches this script and talks over stdin/stdout
