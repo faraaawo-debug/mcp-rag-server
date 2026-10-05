@@ -1,30 +1,162 @@
 [
   {
-    "question": "Which software tools are allowed for work purposes?",
+    "question": "What is research according to the lecture?",
     "repondable": true,
-    "source_attendue": "A_COMPLETER (nom exact du fichier, ex : it_policy.pdf)",
-    "reponse_attendue": "A_COMPLETER"
+    "source_attendue": "research_methods_part1.pdf",
+    "reponse_attendue": "Research is a systematic investigation. The lecture gives several definitions: the systematic investigation into and study of materials and sources in order to establish facts and reach new conclusions; a systematic investigation to find new/different ways of solving a problem; or a systematic investigation to seek new knowledge about some topic (exploring/seeking better solutions).",
+    "phrase_cle": "find new/different ways of solving a problem",
+    "intention_attendue": "definition"
   },
   {
-    "question": "How often must employees update their passwords?",
+    "question": "What does the research scope of a study describe?",
     "repondable": true,
-    "source_attendue": "A_COMPLETER",
-    "reponse_attendue": "A_COMPLETER"
+    "source_attendue": "research_methods_part1.pdf",
+    "reponse_attendue": "The scope describes what the research covers and what it does NOT cover, its limitations and delimitations, its up-sides and down-sides, and to what extent the proposed work would solve the defined problem(s).",
+    "phrase_cle": "What does the research cover? And what it does NOT cover?",
+    "intention_attendue": "definition"
   },
   {
-    "question": "What is the consequence for a minor violation of this policy?",
+    "question": "I have to do the Part-1 \"One Page Research\" exercise. What do I have to do and which sections should I include?",
     "repondable": true,
-    "source_attendue": "A_COMPLETER",
-    "reponse_attendue": "A_COMPLETER"
+    "source_attendue": "research_methods_part1.pdf",
+    "reponse_attendue": "Come up with a daily life problem and analyze it in an academic way with its solution, using seven sections: Problem Scenario Setup, Problem Statement, Aim(s), Objective(s), Methodology, Scope, Question(s).",
+    "phrase_cle": "come up with a daily life problem",
+    "intention_attendue": "exercise"
   },
   {
-    "question": "What task did David complete before this meeting?",
+    "question": "What is the difference between a structured and an unstructured abstract?",
     "repondable": true,
-    "source_attendue": "A_COMPLETER",
-    "reponse_attendue": "A_COMPLETER"
+    "source_attendue": "research_methods_part2.pdf",
+    "reponse_attendue": "A structured abstract has explicit headings showing which section of the abstract is being written (e.g. Background, Methods, Findings); an unstructured abstract is just one or more text paragraphs.",
+    "phrase_cle": "explicit headings showing what section of the abstract",
+    "intention_attendue": "comparison"
   },
   {
-    "question": "What is the company's annual revenue?",
-    "repondable": false
+    "question": "Compare Option A and Option B of the AI assignment.",
+    "repondable": true,
+    "source_attendue": "ai_assignment_2026.pdf",
+    "reponse_attendue": "Option A is a Systematic Literature Review: systematically identify, select, analyze, compare and synthesize published research, discuss the state of research, approaches, findings, limitations, gaps and future directions, with a clearly explained review methodology (search and study selection); 20 to 25 pages including references. Option B is a Problem-Solution paper: identify a specific, clearly defined problem and propose an AI-based solution, designing, implementing, testing and evaluating it with performance measures, and reporting problem statement, related work, methodology, experimental setup, results, limitations and future improvements.",
+    "phrase_cle": "propose an appropriate AI-based solution to address that problem",
+    "intention_attendue": "comparison"
+  },
+  {
+    "question": "My research objective is \"To compare X and Y\". How should I phrase the matching research question?",
+    "repondable": true,
+    "source_attendue": "research_methods_part1.pdf",
+    "reponse_attendue": "The matching research question is \"How does X compare with Y?\". The lecture adds that the verb does not mechanically determine the wording: what matters is that the meaning of the research question matches the meaning of the objective.",
+    "phrase_cle": "How does X compare with Y?",
+    "intention_attendue": "exercise"
+  },
+  {
+    "question": "What is an abstract?",
+    "repondable": true,
+    "source_attendue": "research_methods_part2.pdf",
+    "reponse_attendue": "A brief summary of a research article (thesis, journal paper or conference paper) that helps readers quickly grasp the main context of the article.",
+    "phrase_cle": "A brief summary of a research article",
+    "intention_attendue": "definition"
+  },
+  {
+    "question": "For my BIS assignment, is \"How to retain the customers in GBI?\" an appropriate problem statement?",
+    "repondable": true,
+    "source_attendue": "bis_assignment_guidelines.pdf",
+    "reponse_attendue": "No. The guidelines list it as not appropriate: a problem statement should be a precise, concise statement (not a question), of no more than about five lines and without references. An appropriate version would be \"Some customers are left from GBI.\"",
+    "phrase_cle": "How to retain the customers in GBI?",
+    "intention_attendue": "exercise"
+  },
+  {
+    "question": "Summarize the process flow of the BIS assignment.",
+    "repondable": true,
+    "source_attendue": "bis_assignment_guidelines.pdf",
+    "reponse_attendue": "Find data from an organizational memory, understand the organization and the data, prepare and explore the data (descriptive analysis, background study), choose a problem from the descriptive outcomes, set objectives, perform data analysis (diagnostic, organizational data), knowledge analysis (articles and theories) and information analysis (web documents, news, government reports), summarize and critically evaluate all findings, derive insights, produce deliverables/solutions, and submit a report.",
+    "phrase_cle": "Find a data from an organizational memory",
+    "intention_attendue": "summary"
+  },
+  {
+    "question": "What are the two faces of a problem statement?",
+    "repondable": true,
+    "source_attendue": "research_methods_part2.pdf",
+    "reponse_attendue": "The technical cause (in the example, not knowing how to divide the apple equally) and the real-life effect (the guys are thirsty).",
+    "phrase_cle": "Real-life Effect",
+    "intention_attendue": "definition"
+  },
+  {
+    "question": "What is overfitting, according to the problem statement example?",
+    "repondable": true,
+    "source_attendue": "research_methods_part2.pdf",
+    "reponse_attendue": "Overfitting occurs when a model captures noise or random fluctuations in the training data, leading to poor generalization on unseen data. It is a critical challenge with limited labeled data or high-dimensional features, and is worse in complex models such as deep neural networks whose millions of parameters can memorize training examples.",
+    "phrase_cle": "captures noise or random fluctuations in the training data",
+    "intention_attendue": "definition"
+  },
+  {
+    "question": "Summarize the rules on using generative AI in the AI assignment.",
+    "repondable": true,
+    "source_attendue": "ai_assignment_2026.pdf",
+    "reponse_attendue": "Gen-AI is permitted responsibly as a learning and supporting tool (understanding concepts, exploring ideas, clarifying terminology, learning research methods, improving understanding of academic writing), but must not replace the student's own thinking, analysis or writing; AI content must not be copied and pasted or presented as one's own. Students remain fully responsible for their submission. Papers are checked with Turnitin and/or other mechanisms for similarity and Gen-AI indicators; students may have to explain or defend their work, and misconduct can lead to mark reduction or a failing mark.",
+    "phrase_cle": "must not be used as a substitute for your own thinking",
+    "intention_attendue": "summary"
+  },
+  {
+    "question": "Summarize the conclusion of Part 1 of the research methods lecture.",
+    "repondable": true,
+    "source_attendue": "research_methods_part1.pdf",
+    "reponse_attendue": "There is a problem that we aim to solve through a set of objectives, carried out as described in the methodology. The methodology has limitations and delimitations (the scope). The research question is whether the chosen methodology will help achieve the research aims. The chain goes problem statement, aim(s), objectives, methodology, scope.",
+    "phrase_cle": "set of OBJECTIVES those can be done as mentioned in",
+    "intention_attendue": "summary"
+  },
+  {
+    "question": "What is the difference between a descriptive and an informative abstract?",
+    "repondable": true,
+    "source_attendue": "research_methods_part2.pdf",
+    "reponse_attendue": "A descriptive abstract is a single paragraph of about 100 to 200 words with three parts: purpose, objective and methods (no results or conclusion). An informative abstract is the common type for conferences and journal papers and has five parts: purpose and motivation, problem, methods, results and conclusion.",
+    "phrase_cle": "It is the common type used for conferences and journal papers",
+    "intention_attendue": "comparison"
+  },
+  {
+    "question": "How long must my paper be if I choose the literature review option for the AI assignment?",
+    "repondable": true,
+    "source_attendue": "ai_assignment_2026.pdf",
+    "reponse_attendue": "Between 20 (minimum) and 25 (maximum) pages, including references, written as a journal-style paper.",
+    "phrase_cle": "20 (Minimum) - 25 (Maximum) pages",
+    "intention_attendue": "definition"
+  },
+  {
+    "question": "How many marks is the oral presentation worth in the AI assignment?",
+    "repondable": false,
+    "intention_attendue": "definition"
+  },
+  {
+    "question": "What percentage of the BIS assignment mark goes to each report section?",
+    "repondable": false,
+    "intention_attendue": "definition"
+  },
+  {
+    "question": "Which sampling techniques should I use for a survey in quantitative research?",
+    "repondable": false,
+    "intention_attendue": "exercise"
+  },
+  {
+    "question": "What is the difference between qualitative and quantitative research?",
+    "repondable": false,
+    "intention_attendue": "comparison"
+  },
+  {
+    "question": "What was GBI's total revenue last year?",
+    "repondable": false,
+    "intention_attendue": "definition"
+  },
+  {
+    "question": "What is the capital of Australia?",
+    "repondable": false,
+    "intention_attendue": "off_topic"
+  },
+  {
+    "question": "Give me a recipe for chocolate cake.",
+    "repondable": false,
+    "intention_attendue": "off_topic"
+  },
+  {
+    "question": "Who won the 2022 FIFA World Cup?",
+    "repondable": false,
+    "intention_attendue": "off_topic"
   }
 ]

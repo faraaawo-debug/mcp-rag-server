@@ -7,7 +7,6 @@ BASE_DIR = Path(__file__).resolve().parent
 DOCS_DIR = BASE_DIR / "docs"
 CHROMA_PATH = BASE_DIR / "chroma_db"
 EVAL_SET_PATH = BASE_DIR / "eval_set.json"
-RESULTATS_PATH = BASE_DIR / "resultats_evaluation.json"
 LOG_PATH = BASE_DIR / "server.log"
 
 COLLECTION_NAME = "docs"
@@ -30,6 +29,13 @@ OVERLAP_WORDS = 40
 
 # Nombre d'extraits récupérés par question
 TOP_K = 3
+
+# Évaluation : modèle juge différent du modèle qui génère (limite l'auto-préférence)
+JUGE_MODEL = "llama3"
+# La recherche est toujours mesurée sur ces k, quel que soit le k utilisé par le pipeline,
+# pour que les mesures restent comparables d'une version à l'autre
+K_EVAL = (1, 5)
+RESULTATS_DIR = BASE_DIR / "resultats"
 
 # Seuil de l'indicateur de fiabilité : à recalibrer avec evaluate.py
 SEUIL_FIABILITE = 0.80
