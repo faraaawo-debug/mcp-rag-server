@@ -1,77 +1,77 @@
-"""Serveur MCP qui permet à un assistant IA d'interroger une base de documents."""
+"""MCP server that lets an AI assistant query a set of documents."""
 import asyncio
 import logging
 
 from mcp.server import MCPServer
 
 import config
-from rag_utils import get_model, rechercher, repondre
+from rag_utils import answer_question, get_model, search
 
-# Les logs vont dans un fichier et sur stderr : stdout est réservé au protocole MCP
+# Logs go to a file and to stderr: stdout is reserved for the MCP protocol
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[logging.FileHandler(config.LOG_PATH, encoding="utf-8"), logging.StreamHandler()],
 )
-logging.getLogger("httpx").setLevel(logging.WARNING)  # masque chaque requête HTTP vers les API
+logging.getLogger("httpx").setLevel(logging.WARNING)  # hides every HTTP request to the APIs
 logger = logging.getLogger(__name__)
 
 mcp = MCPServer("mcp-rag-server")
 
-STATUTS = {
-    "fiable": "FIABLE : la réponse s'appuie sur les documents",
-    "a_verifier": "À VÉRIFIER : la réponse s'éloigne peut-être des documents",
-    "refus": "PAS DE RÉPONSE : l'information n'a pas été trouvée dans les documents",
+STATUSES = {
+    "reliable": "RELIABLE: the answer is supported by the documents",
+    "to_verify": "TO VERIFY: the answer may drift away from the documents",
+    "refusal": "NO ANSWER: the information was not found in the documents",
 }
 
 
-def formater_resultat(resultat):
-    lignes = [resultat["reponse"], "", "---"]
-    lignes.append("Sources : " + ", ".join(resultat["sources"]))
-    statut = STATUTS[resultat["statut"]]
-    if resultat["score_global"] is not None:
-        statut += f" (score {resultat['score_global']:.2f})"
-    lignes.append("Fiabilité : " + statut)
-    lignes.append(f"Temps de génération : {resultat['latence_s']} s")
-    return "\n".join(lignes)
+def format_result(result):
+    lines = [result["answer"], "", "---"]
+    lines.append("Sources: " + ", ".join(result["sources"]))
+    status = STATUSES[result["status"]]
+    if result["overall_score"] is not None:
+        status += f" (score {result['overall_score']:.2f})"
+    lines.append("Reliability: " + status)
+    lines.append(f"Generation time: {result['latency_s']} s")
+    return "\n".join(lines)
 
 
 @mcp.tool()
-async def rechercher_documents(query: str) -> str:
-    """Retourne les extraits de documents les plus pertinents pour une question, avec leur source.
+async def search_documents(query: str) -> str:
+    """Returns the document excerpts most relevant to a question, with their source.
 
     Args:
-        query: La question ou le sujet à rechercher
+        query: The question or topic to search for
     """
-    logger.info(f"Recherche : {query}")
-    # Les embeddings sont bloquants : on les exécute hors de la boucle asyncio
-    passages = await asyncio.to_thread(rechercher, query)
+    logger.info(f"Search: {query}")
+    # Embeddings are blocking: they run outside the asyncio event loop
+    passages = await asyncio.to_thread(search, query)
     return "\n\n---\n\n".join(
-        f"[{p['source']}, extrait {p['chunk']}, similarité {p['similarite']:.2f}]\n{p['texte']}"
+        f"[{p['source']}, excerpt {p['chunk']}, similarity {p['similarity']:.2f}]\n{p['text']}"
         for p in passages
     )
 
 
 @mcp.tool()
-async def poser_question(query: str) -> str:
-    """Répond à une question à partir des documents, en citant les sources
-    et en indiquant un niveau de fiabilité.
+async def ask_question(query: str) -> str:
+    """Answers a question from the documents, citing the sources
+    and giving a reliability status.
 
     Args:
-        query: La question ou le sujet à rechercher
+        query: The question or topic to search for
     """
-    logger.info(f"Question : {query}")
-    # Le LLM et les embeddings sont bloquants : on les exécute hors de la boucle asyncio
-    resultat = await asyncio.to_thread(repondre, query)
+    logger.info(f"Question: {query}")
+    # The LLM and the embeddings are blocking: they run outside the asyncio event loop
+    result = await asyncio.to_thread(answer_question, query)
     logger.info(
-        f"Statut : {resultat['statut']} | score : {resultat['score_global']} | "
-        f"scores : {resultat['scores']} | latence : {resultat['latence_s']} s"
+        f"Status: {result['status']} | score: {result['overall_score']} | "
+        f"scores: {result['scores']} | latency: {result['latency_s']} s"
     )
-    return formater_resultat(resultat)
+    return format_result(result)
 
 
 if __name__ == "__main__":
-    logger.info("Chargement du modèle d'embeddings...")
-    get_model()  # chargé au démarrage pour que la première question ne soit pas lente
-    logger.info(f"Démarrage du serveur MCP (LLM : {config.LLM_PROVIDER}/{config.LLM_MODEL})")
-    mcp.run()  # transport stdio : Claude Desktop lance ce script et dialogue par stdin/stdout
+    logger.info("Loading the embedding model...")
+    get_model()  # loaded at startup so that the first question is not slow
+    logger.info(f"Starting the MCP server (LLM: {config.LLM_PROVIDER}/{config.LLM_MODEL})")
+    mcp.run()  # stdio transport: Claude Desktop launches this script and talks over stdin/stdout

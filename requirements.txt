@@ -1,9 +1,9 @@
 mcp>=2,<3
 chromadb
 sentence-transformers
-pypdf
+pymupdf  # PDF text extraction (AGPL-3.0 licence)
 numpy
-# LLM : API Mistral (génération), API Groq (juge de l'évaluation), Ollama (option locale)
+# LLMs: Mistral API (generation), Groq API (evaluation judge), Ollama (local option)
 mistralai>=3,<4
 groq
 ollama

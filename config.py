@@ -1,8 +1,8 @@
-"""Paramètres partagés par l'ingestion, le serveur et l'évaluation."""
+"""Settings shared by ingestion, the server and the evaluation."""
 from pathlib import Path
 
-# Chemins absolus : le serveur fonctionne quel que soit le dossier depuis lequel
-# il est lancé (indispensable quand c'est Claude Desktop qui le démarre).
+# Absolute paths: the server works whatever folder it is started from
+# (required when Claude Desktop starts it).
 BASE_DIR = Path(__file__).resolve().parent
 DOCS_DIR = BASE_DIR / "docs"
 CHROMA_PATH = BASE_DIR / "chroma_db"
@@ -11,42 +11,48 @@ LOG_PATH = BASE_DIR / "server.log"
 
 COLLECTION_NAME = "docs"
 
-# Organisation attendue : docs/<matiere>/<type>/<fichier>
-# La matière et le type de chaque extrait sont déduits de ce chemin.
+# Expected layout: docs/<subject>/<type>/<file>
+# The subject and type of each excerpt are read from this path.
 DOC_TYPES = ("lectures", "tutorials", "exams", "assignments")
-INCONNU = "unknown"
+UNKNOWN = "unknown"
 
-# Modèle d'embeddings multilingue (français + anglais), 512 tokens maximum.
-# Les modèles E5 attendent les préfixes "query: " et "passage: ".
+# Multilingual embedding model, 384 dimensions, 512 tokens max, run locally.
+# BAAI/bge-base-en-v1.5 was tested (step 3b): better retrieval at k=3, but lower final
+# answer scores on the test set; e5-small was kept.
 EMBEDDING_MODEL = "intfloat/multilingual-e5-small"
+# E5 models expect the "query: " prefix before a question and "passage: " before an indexed
+# passage; "query: " is also used to compare two texts with each other.
+QUERY_PREFIX = "query: "
+PASSAGE_PREFIX = "passage: "
+COMPARISON_PREFIX = "query: "
 
-# LLM qui rédige les réponses
-# "mistral" (par défaut) : API Mistral, clé dans la variable d'environnement MISTRAL_API_KEY.
-#   ministral-14b-2512 : inclus dans l'offre gratuite (mistral-small y est bloqué), version figée
-#   par sa date pour que les mesures restent reproductibles.
-# "ollama" : modèle local, utilisable hors ligne et sans envoyer de données (~2 min par
-#   réponse sur un processeur de portable sans GPU).
+# LLM that writes the answers
+# "mistral" (default): Mistral API, key in the MISTRAL_API_KEY environment variable.
+#   ministral-14b-2512: included in the free tier (mistral-small is blocked there), and the
+#   dated version keeps measurements reproducible.
+# "ollama": local model, usable offline without sending any data (~2 min per answer on a
+#   laptop CPU without GPU).
 LLM_PROVIDER = "mistral"
 LLM_MODELS = {"mistral": "ministral-14b-2512", "ollama": "mistral"}
 LLM_MODEL = LLM_MODELS[LLM_PROVIDER]
-# Nombre d'essais quand une API répond "trop de requêtes" ou est indisponible
-LLM_ESSAIS = 6
+# Number of attempts when an API answers "too many requests" or is unavailable
+LLM_MAX_ATTEMPTS = 6
 
-# Découpage : 200 mots par extrait, 40 mots de chevauchement
+# Chunking: 200 words per excerpt, 40 words of overlap
 CHUNK_WORDS = 200
 OVERLAP_WORDS = 40
 
-# Nombre d'extraits récupérés par question
+# Number of excerpts retrieved per question
 TOP_K = 3
 
-# Évaluation : juge d'une autre famille que le modèle qui génère (limite l'auto-préférence),
-# clé dans la variable d'environnement GROQ_API_KEY
-JUGE_PROVIDER = "groq"
-JUGE_MODEL = "openai/gpt-oss-120b"
-# La recherche est toujours mesurée sur ces k, quel que soit le k utilisé par le pipeline,
-# pour que les mesures restent comparables d'une version à l'autre
-K_EVAL = (1, 5)
-RESULTATS_DIR = BASE_DIR / "resultats"
+# Evaluation: judge from a different model family than the generator (limits self-preference
+# bias), key in the GROQ_API_KEY environment variable
+JUDGE_PROVIDER = "groq"
+JUDGE_MODEL = "openai/gpt-oss-120b"
+# Retrieval is always measured at these k, whatever k the pipeline uses,
+# so that measurements stay comparable from one version to the next
+K_EVAL = (1, 3, 5)  # 3 = number of excerpts the LLM reads (TOP_K)
+RESULTS_DIR = BASE_DIR / "results"
 
-# Seuil de l'indicateur de fiabilité : à recalibrer avec evaluate.py
-SEUIL_FIABILITE = 0.80
+# Threshold of the reliability status: to be recalibrated with evaluate.py
+RELIABILITY_THRESHOLD = 0.80

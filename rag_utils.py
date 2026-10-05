@@ -1,4 +1,4 @@
-"""Briques communes : embeddings, recherche, génération et indicateur de fiabilité."""
+"""Shared building blocks: embeddings, retrieval, generation and reliability status."""
 import time
 
 import chromadb
@@ -12,20 +12,29 @@ _model = None
 
 
 def get_model():
-    """Charge le modèle d'embeddings une seule fois."""
+    """Loads the embedding model only once."""
     global _model
     if _model is None:
         _model = SentenceTransformer(config.EMBEDDING_MODEL)
     return _model
 
 
-def embed_passages(textes):
-    return get_model().encode([f"passage: {t}" for t in textes], normalize_embeddings=True)
+def _encode(texts, prefix):
+    # Normalized vectors: the dot product is then the cosine similarity
+    return get_model().encode([prefix + t for t in texts], normalize_embeddings=True)
 
 
-def embed_queries(textes):
-    # Préfixe "query: " aussi pour comparer une réponse à un texte (usage symétrique)
-    return get_model().encode([f"query: {t}" for t in textes], normalize_embeddings=True)
+def embed_passages(texts):
+    return _encode(texts, config.PASSAGE_PREFIX)
+
+
+def embed_queries(texts):
+    return _encode(texts, config.QUERY_PREFIX)
+
+
+def embed_for_comparison(texts):
+    """To compare texts with each other (answer, excerpts, question)."""
+    return _encode(texts, config.COMPARISON_PREFIX)
 
 
 def get_collection():
@@ -35,28 +44,28 @@ def get_collection():
     )
 
 
-def rechercher(question, k=config.TOP_K):
-    """Retourne les k extraits les plus proches de la question, avec leur source."""
+def search(question, k=config.TOP_K):
+    """Returns the k excerpts closest to the question, with their source."""
     collection = get_collection()
-    vecteur = embed_queries([question])[0].tolist()
+    vector = embed_queries([question])[0].tolist()
     res = collection.query(
-        query_embeddings=[vecteur],
+        query_embeddings=[vector],
         n_results=k,
         include=["documents", "metadatas", "distances"],
     )
     passages = []
-    for texte, meta, distance in zip(res["documents"][0], res["metadatas"][0], res["distances"][0]):
+    for text, meta, distance in zip(res["documents"][0], res["metadatas"][0], res["distances"][0]):
         passages.append({
-            "texte": texte,
+            "text": text,
             "source": meta["source"],
             "chunk": meta["chunk"],
-            "similarite": round(1 - distance, 3),  # distance cosinus -> similarité
+            "similarity": round(1 - distance, 3),  # cosine distance -> similarity
         })
     return passages
 
 
-# Prompt en anglais, la langue des documents : un prompt en français poussait le modèle
-# à répondre en français à des questions posées en anglais.
+# Prompt in English, the language of the documents: a French prompt pushed the model
+# to answer in French to questions asked in English.
 PROMPT = """You are an assistant that answers questions using ONLY the excerpts below.
 Rules:
 - Use only information stated in the excerpts. Do not use your general knowledge.
@@ -65,66 +74,67 @@ Rules:
 - Cite the source file of each piece of information in square brackets, e.g. [lecture.pdf].
 
 Excerpts:
-{contexte}
+{context}
 
 Question: {question}
 """
 
-REFUS = ("je ne sais pas", "i don't know", "i do not know")
+# Refusal phrases (the LLM answers in the language of the question)
+REFUSALS = ("i don't know", "i do not know", "je ne sais pas")
 
 
-def est_un_refus(reponse):
-    return any(r in reponse.lower() for r in REFUS)
+def is_refusal(answer):
+    return any(r in answer.lower() for r in REFUSALS)
 
 
-def generer_reponse(question, passages):
-    """Appelle le LLM configuré (température 0) et mesure le temps de réponse,
-    attentes éventuelles dues aux limites de l'API comprises."""
-    contexte = "\n\n".join(f"[{p['source']}] {p['texte']}" for p in passages)
-    debut = time.perf_counter()
-    reponse = llm.discuter(
-        [{"role": "user", "content": PROMPT.format(contexte=contexte, question=question)}],
-        fournisseur=config.LLM_PROVIDER, modele=config.LLM_MODEL,
+def generate_answer(question, passages):
+    """Calls the configured LLM (temperature 0) and measures the response time,
+    including any wait caused by API rate limits."""
+    context = "\n\n".join(f"[{p['source']}] {p['text']}" for p in passages)
+    start = time.perf_counter()
+    answer = llm.chat(
+        [{"role": "user", "content": PROMPT.format(context=context, question=question)}],
+        provider=config.LLM_PROVIDER, model=config.LLM_MODEL,
     )
-    latence = time.perf_counter() - debut
-    return reponse, latence
+    latency = time.perf_counter() - start
+    return answer, latency
 
 
-def scores_similarite(question, reponse, passages):
-    """Trois scores de similarité cosinus (entre 0 et 1) qui servent d'indicateur rapide.
-    Ce ne sont pas des mesures de vérité : la vraie évaluation est dans evaluate.py."""
-    v_question, v_reponse = embed_queries([question, reponse])
-    v_passages = embed_queries([p["texte"] for p in passages])
-    ancrage = float(np.max(v_passages @ v_reponse))           # réponse proche d'au moins un extrait ?
-    contexte = float(np.mean([p["similarite"] for p in passages]))  # extraits proches de la question ?
-    pertinence = float(v_question @ v_reponse)                # réponse proche de la question ?
+def similarity_scores(question, answer, passages):
+    """Three cosine similarity scores (between 0 and 1) used as a quick indicator.
+    They are not measures of truth: the real evaluation is in evaluate.py."""
+    v_question, v_answer = embed_for_comparison([question, answer])
+    v_passages = embed_for_comparison([p["text"] for p in passages])
+    grounding = float(np.max(v_passages @ v_answer))                  # answer close to at least one excerpt?
+    context = float(np.mean([p["similarity"] for p in passages]))    # excerpts close to the question?
+    relevance = float(v_question @ v_answer)                          # answer close to the question?
     return {
-        "ancrage_documents": round(ancrage, 3),
-        "pertinence_extraits": round(contexte, 3),
-        "pertinence_reponse": round(pertinence, 3),
+        "grounding": round(grounding, 3),
+        "excerpt_relevance": round(context, 3),
+        "answer_relevance": round(relevance, 3),
     }
 
 
-def repondre(question, passages=None):
-    """Pipeline complet : recherche, génération, indicateur de fiabilité."""
+def answer_question(question, passages=None):
+    """Full pipeline: retrieval, generation, reliability status."""
     if passages is None:
-        passages = rechercher(question)
-    reponse, latence = generer_reponse(question, passages)
+        passages = search(question)
+    answer, latency = generate_answer(question, passages)
 
-    if est_un_refus(reponse):
-        # Un refus est un comportement correct, pas une réponse hors documents
-        statut, scores, score_global = "refus", None, None
+    if is_refusal(answer):
+        # A refusal is correct behaviour, not an answer outside the documents
+        status, scores, overall_score = "refusal", None, None
     else:
-        scores = scores_similarite(question, reponse, passages)
-        score_global = round(sum(scores.values()) / 3, 3)
-        statut = "fiable" if score_global >= config.SEUIL_FIABILITE else "a_verifier"
+        scores = similarity_scores(question, answer, passages)
+        overall_score = round(sum(scores.values()) / 3, 3)
+        status = "reliable" if overall_score >= config.RELIABILITY_THRESHOLD else "to_verify"
 
     return {
-        "reponse": reponse,
+        "answer": answer,
         "sources": sorted({p["source"] for p in passages}),
         "passages": passages,
         "scores": scores,
-        "score_global": score_global,
-        "statut": statut,
-        "latence_s": round(latence, 2),
+        "overall_score": overall_score,
+        "status": status,
+        "latency_s": round(latency, 2),
     }

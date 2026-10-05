@@ -1,8 +1,8 @@
 {
   "mcpServers": {
     "documents-rag": {
-      "command": "/CHEMIN/ABSOLU/mcp-rag-server/venv/bin/python",
-      "args": ["/CHEMIN/ABSOLU/mcp-rag-server/server.py"]
+      "command": "C:\\absolute\\path\\to\\mcp-rag-server\\venv\\Scripts\\python.exe",
+      "args": ["C:\\absolute\\path\\to\\mcp-rag-server\\server.py"]
     }
   }
 }

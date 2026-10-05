@@ -1,5 +1,5 @@
-"""Point d'entrée unique vers les LLM : Mistral (API), Groq (API) ou Ollama (local).
-Le reste du code appelle discuter() sans savoir quel fournisseur répond."""
+"""Single entry point to the LLMs: Mistral (API), Groq (API) or Ollama (local).
+The rest of the code calls chat() without knowing which provider answers."""
 import logging
 import os
 import time
@@ -11,69 +11,69 @@ logger = logging.getLogger(__name__)
 _clients = {}
 
 
-def _cle(nom_variable):
-    """Les clés API sont lues dans les variables d'environnement, jamais dans le code.
-    Sous Windows, si la variable n'a pas été transmise au processus (un client MCP ne
-    transmet qu'une liste restreinte de variables au serveur qu'il lance), on la lit
-    directement dans les variables utilisateur de Windows."""
-    cle = os.environ.get(nom_variable)
-    if not cle and os.name == "nt":
+def _api_key(variable_name):
+    """API keys are read from environment variables, never from the code.
+    On Windows, if the variable was not passed to the process (an MCP client only passes a
+    restricted list of variables to the server it launches), it is read directly from the
+    Windows user environment variables."""
+    key = os.environ.get(variable_name)
+    if not key and os.name == "nt":
         import winreg
         try:
-            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Environment") as registre:
-                cle = winreg.QueryValueEx(registre, nom_variable)[0]
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Environment") as registry:
+                key = winreg.QueryValueEx(registry, variable_name)[0]
         except OSError:
-            cle = None
-    if not cle:
-        raise RuntimeError(f"Variable d'environnement {nom_variable} absente (voir le README).")
-    return cle
+            key = None
+    if not key:
+        raise RuntimeError(f"Environment variable {variable_name} is missing (see the README).")
+    return key
 
 
-def _client(fournisseur):
-    if fournisseur not in _clients:
-        if fournisseur == "mistral":
+def _client(provider):
+    if provider not in _clients:
+        if provider == "mistral":
             from mistralai.client import Mistral
-            _clients[fournisseur] = Mistral(api_key=_cle("MISTRAL_API_KEY"))
-        elif fournisseur == "groq":
+            _clients[provider] = Mistral(api_key=_api_key("MISTRAL_API_KEY"))
+        elif provider == "groq":
             from groq import Groq
-            # Les nouvelles tentatives sont gérées par discuter(), pareil pour tous les fournisseurs
-            _clients[fournisseur] = Groq(api_key=_cle("GROQ_API_KEY"), max_retries=0)
+            # Retries are handled by chat(), the same way for every provider
+            _clients[provider] = Groq(api_key=_api_key("GROQ_API_KEY"), max_retries=0)
         else:
-            raise ValueError(f"Fournisseur inconnu : {fournisseur}")
-    return _clients[fournisseur]
+            raise ValueError(f"Unknown provider: {provider}")
+    return _clients[provider]
 
 
-def _appeler(messages, fournisseur, modele, json_strict):
-    if fournisseur == "ollama":
+def _call(messages, provider, model, json_mode):
+    if provider == "ollama":
         import ollama
-        resultat = ollama.chat(
-            model=modele, messages=messages,
-            format="json" if json_strict else "", options={"temperature": 0},
+        result = ollama.chat(
+            model=model, messages=messages,
+            format="json" if json_mode else "", options={"temperature": 0},
         )
-        return resultat["message"]["content"]
+        return result["message"]["content"]
 
-    format_reponse = {"type": "json_object"} if json_strict else None
-    if fournisseur == "mistral":
-        resultat = _client("mistral").chat.complete(
-            model=modele, messages=messages, temperature=0, response_format=format_reponse)
+    response_format = {"type": "json_object"} if json_mode else None
+    if provider == "mistral":
+        result = _client("mistral").chat.complete(
+            model=model, messages=messages, temperature=0, response_format=response_format)
     else:
-        resultat = _client(fournisseur).chat.completions.create(
-            model=modele, messages=messages, temperature=0, response_format=format_reponse)
-    return resultat.choices[0].message.content
+        result = _client(provider).chat.completions.create(
+            model=model, messages=messages, temperature=0, response_format=response_format)
+    return result.choices[0].message.content
 
 
-def discuter(messages, fournisseur, modele, json_strict=False):
-    """Envoie une conversation au LLM (température 0) et retourne le texte de sa réponse.
-    Si l'API répond "trop de requêtes" (429) ou est momentanément indisponible (5xx),
-    on attend de plus en plus longtemps (2, 4, 8... s) avant de réessayer."""
-    for tentative in range(config.LLM_ESSAIS):
+def chat(messages, provider, model, json_mode=False):
+    """Sends a conversation to the LLM (temperature 0) and returns the text of its answer.
+    If the API answers "too many requests" (429) or is temporarily unavailable (5xx),
+    waits longer and longer (2, 4, 8... s) before trying again."""
+    for attempt in range(config.LLM_MAX_ATTEMPTS):
         try:
-            return _appeler(messages, fournisseur, modele, json_strict).strip()
-        except Exception as erreur:
-            code = getattr(erreur, "status_code", None)
-            temporaire = code == 429 or (code is not None and code >= 500)
-            if not temporaire or tentative == config.LLM_ESSAIS - 1:
+            return _call(messages, provider, model, json_mode).strip()
+        except Exception as error:
+            code = getattr(error, "status_code", None)
+            temporary = code == 429 or (code is not None and code >= 500)
+            if not temporary or attempt == config.LLM_MAX_ATTEMPTS - 1:
                 raise
-            attente = 2 ** (tentative + 1)
-            logger.warning(f"{fournisseur}/{modele} : erreur {code}, nouvel essai dans {attente} s")
-            time.sleep(attente)
+            wait = 2 ** (attempt + 1)
+            logger.warning(f"{provider}/{model}: error {code}, retrying in {wait} s")
+            time.sleep(wait)

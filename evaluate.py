@@ -1,17 +1,17 @@
-"""Évalue le pipeline sur un jeu de questions annotées (eval_set.json).
+"""Evaluates the pipeline on a set of annotated questions (eval_set.json).
 
-Usage :
-  python evaluate.py --etiquette reference          # évaluation complète
-  python evaluate.py --etiquette essai --recherche-seule   # recherche uniquement (~1 min, sans LLM)
-  python evaluate.py --etiquette reference --rejuger resultats/reference.json
-      # rejuge des réponses déjà générées, sans les regénérer
+Usage:
+  python evaluate.py --label baseline                    # full evaluation
+  python evaluate.py --label test --retrieval-only       # retrieval only (~1 min, no LLM)
+  python evaluate.py --label baseline --regrade results/baseline.json
+      # grades already generated answers again, without regenerating them
 
-Mesures :
-- recherche (k fixes, indépendants du pipeline) : bon fichier dans les k premiers extraits,
-  phrase clé dans les k premiers extraits, MRR de la phrase clé
-- routeur : taux d'intentions correctement détectées (n/a tant qu'il n'y a pas de routeur)
-- réponses : exactitude et fidélité (LLM juge), refus corrects, temps de génération moyen
-Le script propose aussi un seuil pour l'indicateur de fiabilité du serveur.
+Metrics:
+- retrieval (fixed k, independent of the pipeline): right file within the first k excerpts,
+  key sentence within the first k excerpts, MRR of the key sentence
+- router: rate of correctly detected intents (n/a as long as there is no router)
+- answers: correctness and faithfulness (LLM judge), correct refusals, mean generation time
+The script also suggests a threshold for the server's reliability status.
 """
 import argparse
 import json
@@ -20,31 +20,31 @@ import statistics
 
 import config
 import llm
-from rag_utils import est_un_refus, rechercher, repondre
+from rag_utils import answer_question, is_refusal, search
 
-# Prompts en anglais (langue des documents et des questions) et sortie JSON imposée :
-# un verdict unique, lisible sans ambiguïté.
-JUGE_EXACTITUDE = """You are grading an answer against a reference answer.
+# Prompts in English (language of the documents and questions) and enforced JSON output:
+# a single verdict, readable without ambiguity.
+JUDGE_CORRECTNESS = """You are grading an answer against a reference answer.
 Question: {question}
-Reference answer: {attendue}
-Proposed answer: {proposee}
+Reference answer: {expected}
+Proposed answer: {proposed}
 
 Does the proposed answer contain the essential information of the reference answer, without contradicting it?
 An answer that says the information is not available, or that misses the essential point, is NOT correct.
 Reply with JSON only, exactly one of: {{"verdict": "YES"}} or {{"verdict": "NO"}}"""
 
-# Le juge reçoit la question et les extraits étiquetés par leur fichier, exactement comme le
-# générateur : sans cela, il rejetait des réponses fidèles (citation de fichier invérifiable,
-# réponse courte incompréhensible sans la question).
-JUGE_FIDELITE = """You are checking whether an answer is supported by document excerpts.
+# The judge gets the question and the excerpts labelled with their file, exactly like the
+# generator: without them, it rejected faithful answers (a file citation it could not check,
+# a short answer that made no sense without the question).
+JUDGE_FAITHFULNESS = """You are checking whether an answer is supported by document excerpts.
 Each excerpt starts with its source file name in square brackets.
 
 Question: {question}
 
 Excerpts:
-{contexte}
+{context}
 
-Answer: {reponse}
+Answer: {answer}
 
 Is every factual claim in the answer supported by the excerpts? Rephrasing or summarizing the excerpts is allowed.
 Citing a source file name that appears in the excerpt labels is not a claim to check.
@@ -52,170 +52,171 @@ If at least one factual claim is not supported by the excerpts, the verdict is N
 Reply with JSON only, exactly one of: {{"verdict": "YES"}} or {{"verdict": "NO"}}"""
 
 
-def juger(prompt):
-    """Pose une question fermée au modèle juge.
-    Retourne (verdict, texte brut) ; verdict vaut None si la sortie est illisible."""
-    brut = llm.discuter([{"role": "user", "content": prompt}],
-                        fournisseur=config.JUGE_PROVIDER, modele=config.JUGE_MODEL, json_strict=True)
+def judge(prompt):
+    """Asks the judge model a closed question.
+    Returns (verdict, raw text); verdict is None if the output cannot be read."""
+    raw = llm.chat([{"role": "user", "content": prompt}],
+                   provider=config.JUDGE_PROVIDER, model=config.JUDGE_MODEL, json_mode=True)
     try:
-        verdict = str(json.loads(brut).get("verdict", "")).strip().upper()
+        verdict = str(json.loads(raw).get("verdict", "")).strip().upper()
     except (json.JSONDecodeError, AttributeError):
-        return None, brut
-    return {"YES": True, "NO": False}.get(verdict), brut
+        return None, raw
+    return {"YES": True, "NO": False}.get(verdict), raw
 
 
-def normaliser(texte):
-    """Minuscules, sans espaces ni ponctuation : la phrase clé est retrouvée même si
-    l'extraction du PDF a collé ou séparé des mots ("toshare" / "to share")."""
-    return re.sub(r"[\W_]+", "", texte.lower())
+def normalize(text):
+    """Lowercase, no spaces or punctuation: the key sentence is found even if the PDF
+    extraction glued or split words ("toshare" / "to share")."""
+    return re.sub(r"[\W_]+", "", text.lower())
 
 
-def charger_jeu():
+def load_eval_set():
     return json.loads(config.EVAL_SET_PATH.read_text(encoding="utf-8"))
 
 
-def mesurer_recherche(item):
-    """Rang (1, 2, ...) du bon fichier et du premier extrait contenant la phrase clé,
-    parmi les max(K_EVAL) premiers extraits. None si absent."""
-    passages = rechercher(item["question"], k=max(config.K_EVAL))
-    cle = normaliser(item["phrase_cle"])
-    rang_fichier = next(
-        (i + 1 for i, p in enumerate(passages) if p["source"] == item["source_attendue"]), None)
-    rang_cle = next(
+def measure_retrieval(item):
+    """Rank (1, 2, ...) of the right file and of the first excerpt containing the key
+    sentence, among the first max(K_EVAL) excerpts. None if absent."""
+    passages = search(item["question"], k=max(config.K_EVAL))
+    key = normalize(item["key_sentence"])
+    file_rank = next(
+        (i + 1 for i, p in enumerate(passages) if p["source"] == item["expected_source"]), None)
+    key_rank = next(
         (i + 1 for i, p in enumerate(passages)
-         if p["source"] == item["source_attendue"] and cle in normaliser(p["texte"])), None)
-    return rang_fichier, rang_cle
+         if p["source"] == item["expected_source"] and key in normalize(p["text"])), None)
+    return file_rank, key_rank
 
 
-def juger_ligne(ligne, item):
-    """Ajoute à une ligne de résultat les verdicts d'exactitude et de fidélité."""
-    if not item["repondable"]:
+def grade_row(row, item):
+    """Adds the correctness and faithfulness verdicts to a result row."""
+    if not item["answerable"]:
         return
-    ligne["exacte"], ligne["juge_exactitude"] = juger(JUGE_EXACTITUDE.format(
-        question=item["question"], attendue=item["reponse_attendue"], proposee=ligne["reponse"]))
-    if ligne["statut"] == "refus":
-        ligne["fidele"], ligne["juge_fidelite"] = None, None  # un refus n'affirme rien
+    row["correct"], row["judge_correctness"] = judge(JUDGE_CORRECTNESS.format(
+        question=item["question"], expected=item["expected_answer"], proposed=row["answer"]))
+    if row["status"] == "refusal":
+        row["faithful"], row["judge_faithfulness"] = None, None  # a refusal makes no claim
     else:
-        contexte = "\n\n".join(f"[{p['source']}] {p['texte']}" for p in ligne["passages"])
-        ligne["fidele"], ligne["juge_fidelite"] = juger(JUGE_FIDELITE.format(
-            question=item["question"], contexte=contexte, reponse=ligne["reponse"]))
+        context = "\n\n".join(f"[{p['source']}] {p['text']}" for p in row["passages"])
+        row["faithful"], row["judge_faithfulness"] = judge(JUDGE_FAITHFULNESS.format(
+            question=item["question"], context=context, answer=row["answer"]))
 
 
-def proposer_seuil(lignes):
-    """Cherche le seuil qui sépare le mieux les bonnes réponses des mauvaises."""
-    candidates = [l for l in lignes if l["score_global"] is not None]
+def suggest_threshold(rows):
+    """Looks for the threshold that best separates good answers from bad ones."""
+    candidates = [r for r in rows if r["overall_score"] is not None]
     if len(candidates) < 4:
         return None
-    meilleur = None
-    for s in [x / 100 for x in range(50, 96)]:
-        bien_classees = sum(
-            (l["score_global"] >= s) == (l["exacte"] is True and l["fidele"] is True) for l in candidates
+    best = None
+    for t in [x / 100 for x in range(50, 96)]:
+        well_classified = sum(
+            (r["overall_score"] >= t) == (r["correct"] is True and r["faithful"] is True) for r in candidates
         )
-        taux = bien_classees / len(candidates)
-        if meilleur is None or taux > meilleur[1]:
-            meilleur = (s, taux)
-    return meilleur
+        rate = well_classified / len(candidates)
+        if best is None or rate > best[1]:
+            best = (t, rate)
+    return best
 
 
-def pct(valeurs):
-    valeurs = list(valeurs)
-    return f"{100 * sum(valeurs) / len(valeurs):.0f} % ({sum(valeurs)}/{len(valeurs)})" if valeurs else "n/a"
+def pct(values):
+    values = list(values)
+    return f"{100 * sum(values) / len(values):.0f} % ({sum(values)}/{len(values)})" if values else "n/a"
 
 
-def resumer(etiquette, lignes, recherche_seule=False):
-    rep = [l for l in lignes if l["repondable"]]
-    resume = {"version": etiquette, "questions": len(lignes)}
+def summarize(label, rows, retrieval_only=False):
+    answerable = [r for r in rows if r["answerable"]]
+    summary = {"version": label, "questions": len(rows)}
     for k in config.K_EVAL:
-        resume[f"fichier_trouve@{k}"] = pct(l["rang_fichier"] is not None and l["rang_fichier"] <= k for l in rep)
-        resume[f"phrase_cle@{k}"] = pct(l["rang_cle"] is not None and l["rang_cle"] <= k for l in rep)
-    resume[f"mrr_phrase_cle@{max(config.K_EVAL)}"] = round(
-        statistics.mean(1 / l["rang_cle"] if l["rang_cle"] else 0 for l in rep), 3)
-    if recherche_seule:
-        return resume
+        summary[f"file_found@{k}"] = pct(r["file_rank"] is not None and r["file_rank"] <= k for r in answerable)
+        summary[f"key_sentence@{k}"] = pct(r["key_rank"] is not None and r["key_rank"] <= k for r in answerable)
+    summary[f"mrr_key_sentence@{max(config.K_EVAL)}"] = round(
+        statistics.mean(1 / r["key_rank"] if r["key_rank"] else 0 for r in answerable), 3)
+    if retrieval_only:
+        return summary
 
-    non_rep = [l for l in lignes if not l["repondable"]]
-    avec_intention = [l for l in lignes if l["intention_detectee"] is not None]
-    resume["intentions_correctes"] = pct(
-        l["intention_detectee"] == l["intention_attendue"] for l in avec_intention)
-    resume["exactitude"] = pct(l["exacte"] is True for l in rep)
-    resume["fidelite_reponses_donnees"] = pct(l["fidele"] is True for l in rep if l["statut"] != "refus")
-    resume["refus_corrects"] = pct(l["refus_correct"] for l in non_rep)
-    resume["latence_moyenne_s"] = round(statistics.mean(l["latence_s"] for l in lignes), 2)
-    resume["modele_generateur"] = f"{config.LLM_PROVIDER}/{config.LLM_MODEL}"
-    resume["modele_juge"] = f"{config.JUGE_PROVIDER}/{config.JUGE_MODEL}"
-    # Un refus n'a volontairement pas de verdict de fidélité : il n'est pas compté ici
-    resume["verdicts_illisibles"] = sum(l["exacte"] is None for l in rep) + sum(
-        l["fidele"] is None for l in rep if l["statut"] != "refus")
-    seuil = proposer_seuil([l for l in rep if l["statut"] != "refus"])
-    if seuil:
-        resume["seuil_propose"] = seuil[0]
-        resume["precision_indicateur"] = f"{100 * seuil[1]:.0f} %"
-    return resume
+    unanswerable = [r for r in rows if not r["answerable"]]
+    with_intent = [r for r in rows if r["detected_intent"] is not None]
+    summary["correct_intents"] = pct(
+        r["detected_intent"] == r["expected_intent"] for r in with_intent)
+    summary["correctness"] = pct(r["correct"] is True for r in answerable)
+    summary["faithfulness_given_answers"] = pct(
+        r["faithful"] is True for r in answerable if r["status"] != "refusal")
+    summary["correct_refusals"] = pct(r["correct_refusal"] for r in unanswerable)
+    summary["mean_latency_s"] = round(statistics.mean(r["latency_s"] for r in rows), 2)
+    summary["generator_model"] = f"{config.LLM_PROVIDER}/{config.LLM_MODEL}"
+    summary["judge_model"] = f"{config.JUDGE_PROVIDER}/{config.JUDGE_MODEL}"
+    # A refusal deliberately has no faithfulness verdict: it is not counted here
+    summary["unreadable_verdicts"] = sum(r["correct"] is None for r in answerable) + sum(
+        r["faithful"] is None for r in answerable if r["status"] != "refusal")
+    threshold = suggest_threshold([r for r in answerable if r["status"] != "refusal"])
+    if threshold:
+        summary["suggested_threshold"] = threshold[0]
+        summary["indicator_accuracy"] = f"{100 * threshold[1]:.0f} %"
+    return summary
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--etiquette", default="dernier", help="nom de la version évaluée (ex : reference)")
-    parser.add_argument("--recherche-seule", action="store_true",
-                        help="mesure uniquement la recherche, sans appel au LLM")
-    parser.add_argument("--rejuger", metavar="FICHIER",
-                        help="rejuge les réponses d'un fichier de résultats, sans les regénérer")
+    parser.add_argument("--label", default="latest", help="name of the evaluated version (e.g. baseline)")
+    parser.add_argument("--retrieval-only", action="store_true",
+                        help="only measures retrieval, without calling the LLM")
+    parser.add_argument("--regrade", metavar="FILE",
+                        help="grades the answers of a results file again, without regenerating them")
     args = parser.parse_args()
 
-    jeu = charger_jeu()
-    if args.rejuger:
-        anciennes = json.loads(open(args.rejuger, encoding="utf-8").read())["details"]
-        if [l["question"] for l in anciennes] != [item["question"] for item in jeu]:
-            raise ValueError("Le fichier à rejuger ne correspond pas au jeu d'évaluation actuel.")
-        if any("passages" not in l for l in anciennes if l["repondable"]):
-            raise ValueError("Ce fichier ne contient pas les extraits utilisés : impossible de le rejuger.")
+    eval_set = load_eval_set()
+    if args.regrade:
+        previous = json.loads(open(args.regrade, encoding="utf-8").read())["details"]
+        if [r["question"] for r in previous] != [item["question"] for item in eval_set]:
+            raise ValueError("The file to regrade does not match the current evaluation set.")
+        if any("passages" not in r for r in previous if r["answerable"]):
+            raise ValueError("This file does not contain the excerpts used: it cannot be regraded.")
 
-    lignes = []
-    for n, item in enumerate(jeu, 1):
-        ligne = {
+    rows = []
+    for n, item in enumerate(eval_set, 1):
+        row = {
             "question": item["question"],
-            "repondable": item["repondable"],
-            "intention_attendue": item["intention_attendue"],
+            "answerable": item["answerable"],
+            "expected_intent": item["expected_intent"],
         }
-        if item["repondable"]:
-            ligne["rang_fichier"], ligne["rang_cle"] = mesurer_recherche(item)
+        if item["answerable"]:
+            row["file_rank"], row["key_rank"] = measure_retrieval(item)
 
-        if not args.recherche_seule:
-            if args.rejuger:
-                ancienne = anciennes[n - 1]
-                for cle in ("intention_detectee", "reponse", "statut", "score_global",
-                            "latence_s", "sources", "passages"):
-                    ligne[cle] = ancienne[cle]
+        if not args.retrieval_only:
+            if args.regrade:
+                old = previous[n - 1]
+                for key in ("detected_intent", "answer", "status", "overall_score",
+                            "latency_s", "sources", "passages"):
+                    row[key] = old[key]
             else:
-                resultat = repondre(item["question"])
-                ligne.update({
-                    "intention_detectee": resultat.get("intention"),  # absente tant qu'il n'y a pas de routeur
-                    "reponse": resultat["reponse"],
-                    "statut": resultat["statut"],
-                    "score_global": resultat["score_global"],
-                    "latence_s": resultat["latence_s"],
-                    "sources": resultat["sources"],
-                    # extraits réellement donnés au LLM : permettent de rejuger sans regénérer
-                    "passages": [{k: p[k] for k in ("source", "chunk", "similarite", "texte")}
-                                 for p in resultat["passages"]],
+                result = answer_question(item["question"])
+                row.update({
+                    "detected_intent": result.get("intent"),  # absent as long as there is no router
+                    "answer": result["answer"],
+                    "status": result["status"],
+                    "overall_score": result["overall_score"],
+                    "latency_s": result["latency_s"],
+                    "sources": result["sources"],
+                    # excerpts actually given to the LLM: allow regrading without regenerating
+                    "passages": [{k: p[k] for k in ("source", "chunk", "similarity", "text")}
+                                 for p in result["passages"]],
                 })
-            if item["repondable"]:
-                juger_ligne(ligne, item)
+            if item["answerable"]:
+                grade_row(row, item)
             else:
-                ligne["refus_correct"] = est_un_refus(ligne["reponse"])
-            print(f"[{n}/{len(jeu)}] {item['question'][:60]} -> {ligne['statut']}", flush=True)
-        lignes.append(ligne)
+                row["correct_refusal"] = is_refusal(row["answer"])
+            print(f"[{n}/{len(eval_set)}] {item['question'][:60]} -> {row['status']}", flush=True)
+        rows.append(row)
 
-    resume = resumer(args.etiquette, lignes, args.recherche_seule)
-    config.RESULTATS_DIR.mkdir(exist_ok=True)
-    chemin = config.RESULTATS_DIR / f"{args.etiquette}.json"
-    chemin.write_text(json.dumps({"resume": resume, "details": lignes}, ensure_ascii=False, indent=2),
-                      encoding="utf-8")
+    summary = summarize(args.label, rows, args.retrieval_only)
+    config.RESULTS_DIR.mkdir(exist_ok=True)
+    path = config.RESULTS_DIR / f"{args.label}.json"
+    path.write_text(json.dumps({"summary": summary, "details": rows}, ensure_ascii=False, indent=2),
+                    encoding="utf-8")
 
-    print("\n| Mesure | Résultat |\n|---|---|")
-    for cle, valeur in resume.items():
-        print(f"| {cle} | {valeur} |")
-    print(f"\nDétails enregistrés dans {chemin.relative_to(config.BASE_DIR)}")
+    print("\n| Metric | Result |\n|---|---|")
+    for key, value in summary.items():
+        print(f"| {key} | {value} |")
+    print(f"\nDetails saved in {path.relative_to(config.BASE_DIR)}")
 
 
 if __name__ == "__main__":

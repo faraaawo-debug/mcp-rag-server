@@ -1,4 +1,4 @@
-"""Client de test : appelle les deux outils du serveur MCP sur quelques questions."""
+"""Test client: calls both tools of the MCP server on a few questions."""
 import asyncio
 import sys
 from pathlib import Path
@@ -14,22 +14,22 @@ QUESTIONS = [
 
 
 async def main():
-    # Même Python que celui qui lance ce script (celui du venv), chemin absolu vers le serveur
-    serveur = Path(__file__).resolve().parent / "server.py"
-    params = StdioServerParameters(command=sys.executable, args=[str(serveur)])
+    # Same Python as the one running this script (the venv's), absolute path to the server
+    server = Path(__file__).resolve().parent / "server.py"
+    params = StdioServerParameters(command=sys.executable, args=[str(server)])
     async with stdio_client(params) as (read, write):
         async with ClientSession(read, write) as session:
             await session.initialize()
-            outils = await session.list_tools()
-            print("Outils disponibles :", ", ".join(t.name for t in outils.tools))
+            tools = await session.list_tools()
+            print("Available tools:", ", ".join(t.name for t in tools.tools))
 
             for question in QUESTIONS:
-                print("\n" + "=" * 60 + f"\nQUESTION : {question}")
-                print("\n> rechercher_documents")
-                res = await session.call_tool("rechercher_documents", {"query": question})
+                print("\n" + "=" * 60 + f"\nQUESTION: {question}")
+                print("\n> search_documents")
+                res = await session.call_tool("search_documents", {"query": question})
                 print(res.content[0].text)
-                print("\n> poser_question")
-                res = await session.call_tool("poser_question", {"query": question})
+                print("\n> ask_question")
+                res = await session.call_tool("ask_question", {"query": question})
                 print(res.content[0].text)
 
 
