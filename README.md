@@ -60,9 +60,9 @@ calls (embeddings, LLM) run outside the asyncio event loop.
 | Component | Choice | Why |
 |---|---|---|
 | PDF extraction | PyMuPDF | pypdf glued about ten words together on this corpus ("thematter", "efficiently.Despite"); PyMuPDF glued none. |
-| Embeddings | `intfloat/multilingual-e5-small`, run locally | `BAAI/bge-base-en-v1.5` was tested (row 3b below): it always placed the right passage among the 3 excerpts read by the LLM, but final answers scored lower on the test set, so e5-small was kept. |
+| Embeddings | `intfloat/multilingual-e5-small`, run locally | `BAAI/bge-base-en-v1.5` was tested (row 3b below). On the 15 answerable questions, BGE put the right passage among the 3 excerpts read by the LLM for 15 questions, e5-small for 13; correct answers were 11 with BGE and 12 with e5-small. Neither gap settles the choice on a test set this small. e5-small was kept: it is multilingual (questions can be asked in another language than the documents), and a larger test set is needed to decide. |
 | Answer LLM | Mistral API, `ministral-14b-2512` | A local 7B model on a laptop CPU without GPU took ~2 min per answer (~1 h 45 per evaluation) and invented answers ("3 marks"). `ministral-14b-2512` answers in ~2 s, is included in Mistral's free tier (on this account, `mistral-small` and larger models were not), and the dated version keeps measurements reproducible. |
-| Offline option | `LLM_PROVIDER = "ollama"` in `config.py` | For offline or confidential use; not used for the measurements below. |
+| Local option | `LLM_PROVIDER = "ollama"` in `config.py` | Keeps generation on the machine, with no data sent to Mistral. Fully offline only with a local MCP client such as `test_client.py`: inside Claude Desktop, the question and the tool's output go to Anthropic. Not used for the measurements below. |
 | Evaluation judge | `openai/gpt-oss-120b` via the Groq API, strict JSON output | A different model family from the generator, to limit self-preference bias. A local llama3 8B judge proved unreliable (too lenient, then too strict). |
 | Prompt language | English | A French prompt made the model answer English questions in French. |
 | API keys | User environment variables | Never in the code or in Git (see Setup). |
@@ -71,16 +71,20 @@ calls (embeddings, LLM) run outside the asyncio event loop.
 
 `evaluate.py` runs the system on 23 hand-annotated questions (`eval_set.json`): 15 answerable from
 the documents, 5 on the course topics but not answered by the documents (they check that the LLM
-refuses instead of inventing), and 3 off-topic. For each answerable question, I recorded the source
-file, the expected answer and a key sentence copied from the right passage.
+refuses instead of inventing), and 3 off-topic. For each answerable question, the set gives the
+source file, the expected answer and a key sentence copied from the right passage. The questions
+were drafted with an AI assistant, then reviewed and corrected by me.
 
 - **Retrieval**, measured without any LLM and always on the top 5 excerpts whatever the pipeline
   settings: right file and key sentence found at k = 1, 3 (the number of excerpts the LLM reads)
   and 5, and MRR (mean of 1/rank of the first excerpt containing the key sentence). The key sentence
   is compared without spaces or punctuation, so the result does not depend on how the PDF text was
   extracted.
-- **Answers**, graded by the LLM judge: correctness against the expected answer, and faithfulness
-  to the excerpts (computed on the answers actually given, since a refusal makes no claim).
+- **Answers**, graded by the LLM judge: correctness (does the answer contain the essential
+  information of the expected answer, without contradicting it?) and faithfulness (is every claim
+  supported by the excerpts?). The judge answers YES or NO for each question. Faithfulness is
+  computed on the answers actually given, since a refusal makes no claim: this is why its
+  denominator changes from one version to the next.
 - **Correct refusals** on the 8 questions without an answer, and mean **generation time** (time
   spent in LLM calls: router and answer).
 - **Router**: share of the 23 questions whose detected intent matches the annotated intent.
@@ -103,13 +107,18 @@ How to read these numbers:
   answers also vary when the order of the excerpts changes. A difference of one or two questions
   between versions is therefore not significant; the retrieval metrics, which are deterministic,
   are the most reliable.
-- **3a.** Part of the gain probably comes from a side effect: with fixed 200-word chunks, any change
-  in the extracted text shifts every chunk boundary, and therefore which chunk contains the key
-  sentence.
-- **3b.** BGE put the right passage first less often but always within the 3 excerpts read by the
-  LLM; two questions moved from "I don't know." to a correct answer. Correctness did not improve,
-  because verdicts on long answers (comparisons, summaries) changed for reasons unrelated to
-  retrieval. e5-small was kept.
+- **3a.** The measurable gain is on retrieval (key sentence first: 8 → 10 of 15, MRR 0.678 →
+  0.761). Part of it probably comes from a side effect: with fixed 200-word chunks, any change in
+  the extracted text shifts every chunk boundary, and therefore which chunk contains the key
+  sentence. Correctness went from 11 to 12 of 15, but the one question that changed had its key
+  sentence ranked first in both versions: the generator simply wrote a more complete answer, so
+  this gain is not attributable to the extractor.
+- **3b.** BGE put the right passage among the 3 excerpts read by the LLM for all 15 questions
+  (e5-small: 13), but less often in first position. Two questions moved from "I don't know." to a
+  correct answer; three others lost their "correct" verdict, as the generator wrote differently
+  with the excerpts in another order. Overall, correctness was 11 of 15 with BGE versus 12 with
+  e5-small: a one-question gap, within the measured noise. e5-small was kept; a larger test set
+  is needed to decide between the two models.
 - **5.** The retrieval columns are measured at fixed k without the router, so they do not change.
   The router does not improve the answers on this test set (one more faithful answer is within the
   noise). What it adds is control: off-topic questions are refused without retrieval or
@@ -119,8 +128,12 @@ How to read these numbers:
   to refuse, but a real course question could be refused the same way), and some confusions
   between `definition`, `exercise` and `comparison`. Its detected intents also varied by one
   question between two runs, despite temperature 0.
-- **The LLM switch mattered most for refusals**: the local 7B model invented answers to questions
-  the documents do not answer; `ministral-14b-2512` correctly refuses all 8.
+- **The LLM switch mattered most for refusals**: on the 8 questions the documents do not answer,
+  the first local run (mistral 7B, French prompt) refused 5 and invented answers to the others
+  (for example a mark scale that does not exist); with `ministral-14b-2512` and the English prompt,
+  all 8 are refused. In version 5, 5 of these 8 refusals come directly from the router (3
+  off-topic questions, plus 2 course questions it labelled `off_topic`); the LLM itself refused
+  the other 3.
 - The right file is ranked first in 80 to 100 % of cases depending on the version: with only
   4 documents, this metric hardly separates versions.
 
@@ -178,8 +191,9 @@ On Windows: "Edit environment variables for your account" → User variables →
 reads these user variables directly from Windows, because an MCP client only passes a restricted
 list of environment variables to the server it launches.
 
-To run fully offline, set `LLM_PROVIDER = "ollama"` in `config.py` and install the local model
-(`ollama pull mistral`).
+To keep generation local, set `LLM_PROVIDER = "ollama"` in `config.py` and install the local model
+(`ollama pull mistral`). This mode was not evaluated with the current pipeline. It is fully
+offline only with a local MCP client such as `test_client.py`, not inside Claude Desktop.
 
 ## Usage
 
@@ -209,6 +223,18 @@ python evaluate.py --label my_version --regrade results/baseline.json
    paths on your machine (on Windows, the Python executable is `venv\Scripts\python.exe`).
 3. Restart Claude Desktop: both tools appear in the list of available tools.
 
+The server answers Claude Desktop's startup handshake in about 3 s and loads the embedding model in
+the background (loading it first took ~40 s on a laptop CPU and hit Claude Desktop's startup
+timeout). A question asked during the first minute may wait until the model is loaded.
+
+![Claude Desktop calling the ask_question tool](assets/claude_desktop_demo.png)
+
+*Claude Desktop calling the `ask_question` tool. Claude rewrites the tool's output in its own
+words; the raw output (detected intent `comparison`, source `research_methods_part2.pdf`, status
+RELIABLE, score 0.86, 4.4 s) is in the collapsed "Course documents: Ask question" panel. Claude's
+rewording adds details that are not in the retrieved excerpts (the heading examples and the page
+numbers): see Limitations.*
+
 ## Limitations
 
 - **Small corpus**: 4 documents (about 4,800 words, 73 pages).
@@ -217,16 +243,23 @@ python evaluate.py --label my_version --regrade results/baseline.json
 - **Struck-through text and text inside images are not extracted** from the PDFs. For example, one
   slide strikes out "Results" and "Conclusion" from the parts of a descriptive abstract; the
   extracted text lists them as if they were included.
-- **The reliability status does not yet separate good answers from bad ones**: it is computed from
-  cosine similarities between the question, the excerpts and the answer, and every answer given
-  scores between 0.83 and 0.92. It is a quick signal, not a proof.
+- **The reliability status does not yet separate good answers from bad ones**: it is the average
+  of cosine similarities between the question, the excerpts and the answer, and every answer given
+  scores between 0.83 and 0.92, including a wrong one marked RELIABLE. These similarities are high
+  by construction (the excerpts are chosen because they are close to the question, and the answer
+  reuses their words, even when it is wrong), and E5 models give cosine scores in a narrow, high
+  range. Only the NO ANSWER status, based on refusal detection, was right on all 8 cases. The
+  RELIABLE / TO VERIFY threshold (0.80) was never calibrated.
 - When the right passage is not among the 3 excerpts sent to the LLM, it answers "I don't know."
   rather than inventing an answer (2 of the 15 answerable questions in the baseline).
 - The LLM judge itself has not yet been validated against human annotations.
+- In Claude Desktop, the assistant rewrites the tool's output and can add details that are not in
+  the documents (in the screenshot above: heading examples and page numbers). The sources and the
+  reliability status apply to the tool's output, not to the assistant's rewording.
 - The intent router can label a genuine course question as `off_topic` and refuse it; its
   accuracy (74 % on 23 questions) was measured on the same small test set.
-- PyMuPDF is licensed under AGPL-3.0: fine for an open-source project, but closed commercial use
-  would require a commercial licence or switching back to pypdf (BSD licence).
+- PyMuPDF is licensed under AGPL-3.0, so this project is too (see License): closed commercial use
+  would require a commercial PyMuPDF licence or switching back to pypdf (BSD licence).
 
 ## Next steps
 
@@ -243,3 +276,12 @@ python evaluate.py --label my_version --regrade results/baseline.json
 Python 3.12, MCP Python SDK 2, PyMuPDF, ChromaDB, Sentence Transformers
 (`intfloat/multilingual-e5-small`), Mistral API (`ministral-14b-2512`), Groq API (evaluation judge),
 Ollama (optional), pytest and GitHub Actions for the unit tests.
+
+## License
+
+The code of this project is licensed under the GNU Affero General Public License v3.0 (see
+`LICENSE`), a requirement of PyMuPDF's licence.
+
+The course documents in `docs/` are not covered by this licence: they remain the property of their
+authors (copyright notices in the files) and are included only to demonstrate and evaluate the
+project.

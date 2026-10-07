@@ -1,6 +1,7 @@
 """MCP server that lets an AI assistant query a set of documents."""
 import asyncio
 import logging
+import threading
 
 from mcp.server import MCPServer
 
@@ -77,8 +78,10 @@ async def ask_question(query: str) -> str:
 
 
 if __name__ == "__main__":
-    logger.info("Loading the embedding model...")
-    get_model()  # loaded at startup so that the first question is not slow
+    # The embedding model is loaded in a background thread, so that the server answers Claude
+    # Desktop's handshake immediately (loading it first took ~40 s and hit the startup timeout).
+    # A question that arrives before the end of the loading simply waits for it.
+    threading.Thread(target=get_model, name="model-preload", daemon=True).start()
     logger.info(f"Starting the MCP server (LLM: {config.LLM_PROVIDER}/{config.LLM_MODEL}, "
                 f"router: {'on' if config.USE_ROUTER else 'off'})")
     mcp.run()  # stdio transport: Claude Desktop launches this script and talks over stdin/stdout

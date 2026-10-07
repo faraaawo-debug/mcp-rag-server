@@ -1,22 +1,27 @@
 """Shared building blocks: embeddings, retrieval, generation and reliability status."""
+import threading
 import time
 
-import chromadb
 import numpy as np
-from sentence_transformers import SentenceTransformer
 
 import config
 import llm
 import router
 
 _model = None
+_model_lock = threading.Lock()
 
 
 def get_model():
-    """Loads the embedding model only once."""
+    """Loads the embedding model only once, even if several threads ask for it at the same time.
+    sentence-transformers (and PyTorch) are imported here rather than at the top of the file:
+    importing them takes tens of seconds on a laptop CPU, and the MCP server must answer
+    Claude Desktop's handshake before its startup timeout."""
     global _model
-    if _model is None:
-        _model = SentenceTransformer(config.EMBEDDING_MODEL)
+    with _model_lock:
+        if _model is None:
+            from sentence_transformers import SentenceTransformer
+            _model = SentenceTransformer(config.EMBEDDING_MODEL)
     return _model
 
 
@@ -39,6 +44,7 @@ def embed_for_comparison(texts):
 
 
 def get_collection():
+    import chromadb  # imported on first use, for the same startup-time reason
     client = chromadb.PersistentClient(path=str(config.CHROMA_PATH))
     return client.get_or_create_collection(
         name=config.COLLECTION_NAME, metadata={"hnsw:space": "cosine"}
